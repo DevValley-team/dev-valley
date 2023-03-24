@@ -12,6 +12,7 @@ import { PostLike } from "./modules/posts/entities/post-like.entity";
 import { Comment } from "./modules/comment/entities/comment.entity";
 import { CommentLike } from "./modules/comment/entities/comment-like.entity";
 import { Category } from "./modules/posts/entities/category.entity";
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   controllers: [AppController],
@@ -24,7 +25,8 @@ import { Category } from "./modules/posts/entities/category.entity";
   }),
     UsersModule,
     PostsModule,
-    CommentsModule
+    CommentsModule,
+    AuthModule
   ],
   providers: [AppService]
 })

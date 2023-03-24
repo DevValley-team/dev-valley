@@ -17,10 +17,10 @@ export class User {
   @Column({ default: 0 })
   experience: number;
 
-  @Column()
-  role: string;
+  // @Column()
+  // role: string;
 
-  @Column()
+  @Column({ nullable: true })
   lastLogInAt: Date;
 
   @CreateDateColumn()
