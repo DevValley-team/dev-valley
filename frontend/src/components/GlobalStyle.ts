@@ -31,8 +31,10 @@ footer, header, hgroup, main, menu, nav, section {
     display: none;
 }
 body {
+  padding-top: 70px;
   line-height: 1;
   font-family: 'Noto Sans KR', sans-serif;
+  background-color: ${(props) => props.theme.backgroundColor};
 }
 menu, ol, ul {
   list-style: none;
@@ -48,5 +50,8 @@ q:before, q:after {
 table {
   border-collapse: collapse;
   border-spacing: 0;
+}
+a{
+  text-decoration: none;
 }
 `;
