@@ -1,20 +1,17 @@
-import { useRouter } from "next/router";
-import { useState, FormEvent } from "react";
+import Router from "next/router";
+import { FormEvent, useState } from "react";
 import styled from "styled-components";
 
-interface ISingupData {
+interface ILoginData {
   email: string;
   password: string;
-  nickname: string;
 }
 
-export default function SignupForm() {
-  const [formData, setFormData] = useState<ISingupData>({
+export default function LoginForm() {
+  const [formData, setFormData] = useState<ILoginData>({
     email: "",
     password: "",
-    nickname: "",
   });
-  const router = useRouter();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -29,7 +26,7 @@ export default function SignupForm() {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const res = await fetch("/api/auth/signup", {
+      const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -37,7 +34,7 @@ export default function SignupForm() {
         body: JSON.stringify(formData),
       });
       if (res.ok) {
-        router.push("/login");
+        Router.push("/");
       } else {
         const { message } = await res.json();
         throw new Error(message);
@@ -48,8 +45,8 @@ export default function SignupForm() {
   };
 
   return (
-    <RegisterForm onSubmit={handleSubmit}>
-      <RegisterLabel>이메일</RegisterLabel>
+    <LoginFormContainer onSubmit={handleSubmit}>
+      <LoginLabel>이메일</LoginLabel>
       <Input
         value={formData.email}
         name="email"
@@ -57,32 +54,24 @@ export default function SignupForm() {
         placeholder="user@naver.com"
         onChange={handleChange}
       />
-      <RegisterLabel>비밀번호</RegisterLabel>
+      <LoginLabel>비밀번호</LoginLabel>
       <Input
         value={formData.password}
         name="password"
         type="password"
-        placeholder="최소 8자 이상"
+        placeholder="8자 이상"
         onChange={handleChange}
       />
-      <RegisterLabel>닉네임</RegisterLabel>
-      <Input
-        value={formData.password}
-        name="nickname"
-        type="nickname"
-        placeholder="10자 미만으로 입력해주세요"
-        onChange={handleChange}
-      />
-      <EmailSingupBtn type="submit">이메일로 계속하기</EmailSingupBtn>
-    </RegisterForm>
+      <EmailLoginBtn type="submit">로그인</EmailLoginBtn>
+    </LoginFormContainer>
   );
 }
 
-const RegisterForm = styled.form`
+const LoginFormContainer = styled.form`
   padding: 0px 10px;
   margin-bottom: 40px;
 `;
-const RegisterLabel = styled.label`
+const LoginLabel = styled.label`
   color: ${(props) => props.theme.textColor};
 `;
 const Input = styled.input`
@@ -108,7 +97,7 @@ const Input = styled.input`
   }
 `;
 
-const EmailSingupBtn = styled.button`
+const EmailLoginBtn = styled.button`
   font-family: "Noto Sans KR";
   font-size: 1rem;
   border: none;
