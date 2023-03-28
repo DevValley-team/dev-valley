@@ -1,10 +1,12 @@
 import LoginForm from "@/components/LoginForm";
+import Seo from "@/components/Seo";
 import Link from "next/link";
 import styled from "styled-components";
 
 export default function Login() {
   return (
     <Container>
+      <Seo title="Login" />
       <Title>로그인</Title>
       <SubTitle>개발자들의 놀이터인 DevValley에 오신것을 환영합니다.</SubTitle>
       <LoginForm />
