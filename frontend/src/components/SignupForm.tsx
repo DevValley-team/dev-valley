@@ -5,12 +5,14 @@ import styled from "styled-components";
 interface ISingupData {
   email: string;
   password: string;
+  nickname: string;
 }
 
 export default function SignupForm() {
   const [formData, setFormData] = useState<ISingupData>({
     email: "",
     password: "",
+    nickname: "",
   });
   const router = useRouter();
 
@@ -61,6 +63,14 @@ export default function SignupForm() {
         name="password"
         type="password"
         placeholder="최소 8자 이상"
+        onChange={handleChange}
+      />
+      <RegisterLabel>닉네임</RegisterLabel>
+      <Input
+        value={formData.password}
+        name="nickname"
+        type="nickname"
+        placeholder="10자 미만으로 입력해주세요"
         onChange={handleChange}
       />
       <EmailSingupBtn type="submit">이메일로 계속하기</EmailSingupBtn>
