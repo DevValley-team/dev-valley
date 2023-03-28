@@ -6,7 +6,6 @@ import styled from "styled-components";
 export default function register() {
   return (
     <Container>
-      <TopNav />
       <Title>회원 가입</Title>
       <SubTitle>개발자들의 놀이터인 DevValley에 오신것을 환영합니다.</SubTitle>
       <SignupForm />
