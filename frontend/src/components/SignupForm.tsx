@@ -67,7 +67,7 @@ export default function SignupForm() {
       />
       <RegisterLabel>닉네임</RegisterLabel>
       <Input
-        value={formData.password}
+        value={formData.nickname}
         name="nickname"
         type="nickname"
         placeholder="10자 미만으로 입력해주세요"
