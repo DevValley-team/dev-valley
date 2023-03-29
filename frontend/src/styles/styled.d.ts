@@ -8,5 +8,8 @@ declare module "styled-components" {
     inputFocusColor: string;
     btnColor: string;
     btnFocusColor: string;
+    btnHoverColor: string;
+    modalBackgroundColor: string;
+    borderBottomColor: string;
   }
 }
