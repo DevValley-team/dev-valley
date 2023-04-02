@@ -3,9 +3,9 @@ POST http://localhost:3001/api/auth/signup
 Content-Type: application/json
 
 {
-  "email": "1234@dfs.com",
-  "password": "sdfsfsdf",
-  "nickname": "test"
+  "email": "asdasd@dfss.com",
+  "password": "111122223333",
+  "nickname": "test2"
 }
 
 ### 유저 로그인
@@ -13,9 +13,13 @@ POST http://localhost:3001/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "1234@dfs.com",
-  "password": "sdfsfsdf"
+  "email": "asdasd@dfss.com",
+  "password": "111122223333"
 }
 
 ### 이메일로 유저 찾기
 GET http://localhost:3001/api/auth?email=ase@dfs.com
+
+### test
+GET http://localhost:3001/api/auth/test
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjgsImVtYWlsIjoiYXNkYXNkQGRmc3MuY29tIiwibmlja25hbWUiOiJ0ZXN0MiIsImlhdCI6MTY4MDQzNjAyOSwiZXhwIjoxNjgwNDM2MDg5fQ._nBIEna3xSbKhRKlT_N5U0f54oCuLp7NRmOVo0B9x90

@@ -7,7 +7,7 @@ export class UsersController {
 
   @Get('whoami')
   whoami(@Query('id') id: string) {
-    return this.usersService.findOne(parseInt(id));
+    return this.usersService.findOneById(parseInt(id));
   }
 
 }
