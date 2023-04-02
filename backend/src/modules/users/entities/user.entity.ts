@@ -23,6 +23,15 @@ export class User {
   @Column({ nullable: true })
   lastLogInAt: Date;
 
+  @Column({ default: false })
+  emailVerified: boolean;
+
+  @Column({ nullable: true })
+  emailVerificationToken: string;
+
+  @Column({ nullable: true })
+  emailVerificationTokenExpiresAt: Date;
+
   @CreateDateColumn()
   createdAt: Date;
 
