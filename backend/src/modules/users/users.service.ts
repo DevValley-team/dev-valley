@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { User } from "./entities/user.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -21,32 +21,35 @@ export class UsersService {
     return await this.repo.findOne({ where: {id} });
   }
 
-  findByEmail(email: string) {
+  async findOneByEmail(email: string) {
     if (!email) {
       throw new BadRequestException();
     }
 
-    return this.repo.find({ where: { email } });
+    return await this.repo.findOne({ where: { email } });
   }
 
   async update(id: number, attrs: Partial<User>) {
     const user = await this.findOneById(id);
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('User not found.');
     }
 
     Object.assign(user, attrs);
     return this.repo.save(user);
   }
 
-  async remove(id: number) {
-    const user = await this.findOneById(id);
-
-    if (!user) {
-      throw new NotFoundException('User not found');
+  async remove(id: number, user: any) {
+    const result = await this.repo.softDelete(id);
+    if (user.id !== id) {
+      throw new ForbiddenException('You do not have permission to do this.');
     }
 
-    return this.repo.remove(user);
+    if (result.affected === 0) {
+      throw new NotFoundException('User not found.');
+    }
+
+    return true;
   }
 }

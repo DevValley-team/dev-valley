@@ -3,7 +3,7 @@ POST http://localhost:3001/api/auth/signup
 Content-Type: application/json
 
 {
-  "email": "asdasd@dfss.com",
+  "email": "asdasddd@dfss.com",
   "password": "111122223333",
   "nickname": "test2"
 }
@@ -13,13 +13,17 @@ POST http://localhost:3001/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "asdasd@dfss.com",
+  "email": "asdasdd@dfss.com",
   "password": "111122223333"
 }
 
 ### 이메일로 유저 찾기
-GET http://localhost:3001/api/auth?email=ase@dfs.com
+GET http://localhost:3001/api/users?email=asdasdd@dfss.com
 
 ### test
 GET http://localhost:3001/api/auth/test
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjgsImVtYWlsIjoiYXNkYXNkQGRmc3MuY29tIiwibmlja25hbWUiOiJ0ZXN0MiIsImlhdCI6MTY4MDQzNjAyOSwiZXhwIjoxNjgwNDM2MDg5fQ._nBIEna3xSbKhRKlT_N5U0f54oCuLp7NRmOVo0B9x90
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJhc2Rhc2RkZEBkZnNzLmNvbSIsIm5pY2tuYW1lIjoidGVzdDIiLCJpYXQiOjE2ODA0NDUxNDgsImV4cCI6MTY4MDQ0NTI2OH0.aQntZwFQeVkR3uxj3thAQ9a26G3XHZqVqC7qCXmKlf0
+
+### 유저 삭제
+DELETE http://localhost:3001/api/users/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJhc2Rhc2RkQGRmc3MuY29tIiwibmlja25hbWUiOiJ0ZXN0MiIsImlhdCI6MTY4MDQ0NDU5MSwiZXhwIjoxNjgwNDQ0NzExfQ.uzQJFl7SIoJVlfHGa_XzncgpIDT6lViFYvbIHLTPpsk

@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export class User {
@@ -20,9 +20,6 @@ export class User {
   // @Column()
   // role: string;
 
-  @Column({ nullable: true })
-  lastLogInAt: Date;
-
   @Column({ default: false })
   emailVerified: boolean;
 
@@ -32,10 +29,16 @@ export class User {
   @Column({ nullable: true })
   emailVerificationTokenExpiresAt: Date;
 
+  @Column({ nullable: true })
+  lastLogInAt: Date;
+
   @CreateDateColumn()
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @Column({ nullable: true })
   updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt: Date;
 
 }

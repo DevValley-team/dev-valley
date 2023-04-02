@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from "./dtos/create-user.dto";
 import { JwtService } from "@nestjs/jwt";
 import { LoginUserDto } from "./dtos/login-user.dto";
+import { User } from "../users/entities/user.entity";
 
 @Injectable()
 export class AuthService {
@@ -11,7 +12,7 @@ export class AuthService {
               private readonly jwtService: JwtService,) {}
 
   async validateUser(email: string, password: string) {
-    const [user] = await this.usersService.findByEmail(email);
+    const user = await this.usersService.findOneByEmail(email);
 
     if (!user) {
       throw new NotFoundException('User not found.');
@@ -23,13 +24,14 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
+    await this.usersService.update(user.id, { lastLogInAt: new Date() });
     return user;
   }
 
   async signup(dto: CreateUserDto) {
-    const users = await this.usersService.findByEmail(dto.email);
+    const user = await this.usersService.findOneByEmail(dto.email);
 
-    if (users.length) {
+    if (user) {
       throw new BadRequestException('email in use');
     }
 
@@ -39,8 +41,8 @@ export class AuthService {
     return await this.usersService.create(dto);
   }
 
-  async login(user: any) {
-    const payload = { userId: user.id,
+  async login(user: User) {
+    const payload = { id: user.id,
                       email: user.email,
                       nickname: user.nickname };
 

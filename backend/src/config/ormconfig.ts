@@ -12,6 +12,7 @@ switch (process.env.NODE_ENV) {
       type: 'sqlite',
       database: 'db.sqlite',
       entities: ['**/*.entity.js'],
+      synchronize: true,
     });
     break;
   case 'test':
@@ -26,8 +27,8 @@ switch (process.env.NODE_ENV) {
     Object.assign(ormconfig, {
       type: 'postgres',
       url: process.env.DATABASE_URL,
-      migrationsRun: true,
       entities: ['**/*.entity.js'],
+      migrationsRun: true,
     });
     break;
   default:
