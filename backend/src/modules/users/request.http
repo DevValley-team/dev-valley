@@ -1,0 +1,2 @@
+### whoami
+GET http://localhost:3001/api/users/whoami?id=1
