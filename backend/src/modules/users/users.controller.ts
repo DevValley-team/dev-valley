@@ -15,7 +15,7 @@ import { Serialize } from "../../interceptors/serialize.interceptor";
 import { UserDto } from "./dtos/user.dto";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 import { User } from "../../decorators/user.decorator";
-import { JwtUserDto } from "../auth/dtos/jwt-user.dto";
+import { JwtTokenDto } from "../auth/dtos/jwt-token.dto";
 
 @Serialize(UserDto)
 @Controller('users')
@@ -35,7 +35,7 @@ export class UsersController {
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   @HttpCode(204)
-  async remove(@Param('id') id: string, @User() user: JwtUserDto) {
+  async remove(@Param('id') id: string, @User() user: JwtTokenDto) {
     return await this.usersService.remove(parseInt(id), user);
   }
 

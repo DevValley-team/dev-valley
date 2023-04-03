@@ -1,4 +1,5 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { UserRole } from "./user-role.enum";
 
 @Entity()
 export class User {
@@ -17,8 +18,11 @@ export class User {
   @Column({ default: 0 })
   experience: number;
 
-  // @Column()
-  // role: string;
+  // @Column({
+  //   type: 'varchar',
+  //   default: UserRole.USER,
+  // })
+  role: string;
 
   @Column({ default: false })
   emailVerified: boolean;

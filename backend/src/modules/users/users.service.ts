@@ -2,7 +2,8 @@ import { BadRequestException, ForbiddenException, Injectable, NotFoundException 
 import { User } from "./entities/user.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { CreateUserDto } from "../auth/dtos/create-user.dto";
+import { CreateUserDto } from "./dtos/create-user.dto";
+import { UserRole } from "./entities/user-role.enum";
 
 @Injectable()
 export class UsersService {
@@ -10,6 +11,12 @@ export class UsersService {
 
   create(dto: CreateUserDto) {
     const user = this.repo.create(dto);
+
+    user.role = UserRole.USER;
+    if (dto.isAdmin) {
+      user.role = UserRole.ADMIN;
+    }
+
     return this.repo.save(user);
   }
 
