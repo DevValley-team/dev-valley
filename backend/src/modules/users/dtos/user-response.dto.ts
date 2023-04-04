@@ -14,6 +14,12 @@ export class UserResponseDto {
   experience: number;
 
   @Expose()
+  role: string;
+
+  @Expose()
+  emailVerified: boolean;
+
+  @Expose()
   lastLogInAt: Date;
 
   @Expose()
