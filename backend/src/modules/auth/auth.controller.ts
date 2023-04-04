@@ -6,8 +6,10 @@ import { JwtAuthGuard } from "./guards/jwt-auth.guard";
 import { LocalAuthGuard } from "./guards/local-auth.guard";
 import { SignupResponseDto } from "./dtos/signup-response.dto";
 import { Serialize } from "../../interceptors/serialize.interceptor";
-import { User } from "../../decorators/user.decorator";
 import { JwtTokenDto } from "./dtos/jwt-token.dto";
+import { CurrentUser } from "../../decorators/current-user.decorator";
+import { Roles } from "../../decorators/roles.decorator";
+import { UserRole } from "../users/entities/user-role.enum";
 
 @Controller('auth')
 export class AuthController {
@@ -26,9 +28,15 @@ export class AuthController {
     return await this.authService.signup(body);
   }
 
-  @Get('test')
+  @Get('jwtTest')
   @UseGuards(JwtAuthGuard)
-  test(@User() user: JwtTokenDto) {
+  jwtTest(@CurrentUser() user: JwtTokenDto) {
+    return user;
+  }
+
+  @Get('roleTest')
+  @Roles(UserRole.ADMIN)
+  roleTest(@CurrentUser() user: JwtTokenDto) {
     return user;
   }
 

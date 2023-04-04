@@ -22,7 +22,7 @@ GET http://localhost:3001/api/users?email=asdasdd@dfss.com
 
 ### jwt test
 GET http://localhost:3001/api/auth/jwtTest
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhc2Rhc2RkZEBkZnNzLmNvbSIsIm5pY2tuYW1lIjoidGVzdDIiLCJpYXQiOjE2ODA1ODU3ODgsImV4cCI6MTY4MDU4NTkwOH0.lJbQBbe8-efAj9DhKo9qaG5bLE3pPhL6sGPFO0u-CmU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhc2Rhc2RkZEBkZnNzLmNvbSIsIm5pY2tuYW1lIjoidGVzdDIiLCJyb2xlIjoidXNlciIsImlhdCI6MTY4MDU5NjYzMiwiZXhwIjoxNjgwNTk2NzUyfQ.bl4YhMemt6WfQKnxPUgBtRqUCy5Pxq6jeXlZ_DY1mck
 
 ### 유저 삭제
 DELETE http://localhost:3001/api/users/2
@@ -50,4 +50,4 @@ Content-Type: application/json
 
 ### role test
 GET http://localhost:3001/api/auth/roleTest
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJhZG1pbkBhZG1pbi5jb20iLCJuaWNrbmFtZSI6InRlc3QyIiwiaWF0IjoxNjgwNTkxMjM3LCJleHAiOjE2ODA1OTEzNTd9.hdY3bd-5J8pOCHNdGLeBqwsecsi_8OfaUp3QSK4mEh8
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJhZG1pbkBhZG1pbi5jb20iLCJuaWNrbmFtZSI6InRlc3QyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjgwNTk2NTY3LCJleHAiOjE2ODA1OTY2ODd9.LVaGk1fuvuhu-WSbGw3SOJQSrE4iIp3pREE3EB3sAE4

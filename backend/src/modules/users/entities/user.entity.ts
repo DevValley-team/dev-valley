@@ -18,10 +18,10 @@ export class User {
   @Column({ default: 0 })
   experience: number;
 
-  // @Column({
-  //   type: 'varchar',
-  //   default: UserRole.USER,
-  // })
+  @Column({
+    type: 'varchar',
+    default: UserRole.USER,
+  })
   role: string;
 
   @Column({ default: false })
