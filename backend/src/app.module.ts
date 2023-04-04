@@ -11,6 +11,7 @@ import ormconfig from "./config/ormconfig";
 import configuration from "./config/configuration";
 import { APP_GUARD } from "@nestjs/core";
 import { RolesGuard } from "./guards/roles.guard";
+import { JwtAuthGuard } from "./modules/auth/guards/jwt-auth.guard";
 
 @Module({
   controllers: [AppController],
@@ -28,6 +29,10 @@ import { RolesGuard } from "./guards/roles.guard";
   ],
   providers: [
     AppService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
     // {
     //   provide: APP_GUARD,
     //   useClass: RolesGuard,

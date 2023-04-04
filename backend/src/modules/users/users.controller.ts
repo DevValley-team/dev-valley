@@ -1,5 +1,5 @@
 import {
-  Body,
+  Body, ClassSerializerInterceptor,
   Controller,
   Delete,
   ForbiddenException,
@@ -8,20 +8,22 @@ import {
   Param,
   Post,
   Query,
-  UseGuards
+  UseGuards, UseInterceptors
 } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { Serialize } from "../../interceptors/serialize.interceptor";
-import { UserDto } from "./dtos/user.dto";
+import { UserResponseDto } from "./dtos/user-response.dto";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
-import { JwtTokenDto } from "../auth/dtos/jwt-token.dto";
+import { JwtTokenUserDto } from "../auth/dtos/jwt-token-user.dto";
 import { CurrentUser } from "../../decorators/current-user.decorator";
+import { Public } from "../auth/decorators/public.decorator";
 
-@Serialize(UserDto)
 @Controller('users')
+@Serialize(UserResponseDto)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Public()
   @Get('whoami')
   whoami(@Query('id') id: string) {
     return this.usersService.findOneById(parseInt(id));
@@ -35,7 +37,7 @@ export class UsersController {
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   @HttpCode(204)
-  async remove(@Param('id') id: string, @CurrentUser() user: JwtTokenDto) {
+  async remove(@Param('id') id: string, @CurrentUser() user: JwtTokenUserDto) {
     return await this.usersService.remove(parseInt(id), user);
   }
 
