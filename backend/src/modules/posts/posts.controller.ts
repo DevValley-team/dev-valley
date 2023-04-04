@@ -16,6 +16,4 @@ export class PostsController {
     return await this.postsService.create(body, user.id);
   }
 
-
-
 }

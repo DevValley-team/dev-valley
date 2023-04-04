@@ -1,4 +1,4 @@
-import { Expose } from "class-transformer";
+import { Expose, Transform } from "class-transformer";
 import { UserResponseDto } from "../../users/dtos/user-response.dto";
 
 export class CategoryResponseDto {
@@ -19,11 +19,13 @@ export class PostResponseDto {
   @Expose()
   content: string;
 
+  @Transform(({ obj }) => obj.category.name)
   @Expose()
-  category: CategoryResponseDto;
+  categoryName: string;
 
+  @Transform(({ obj }) => obj.user.id)
   @Expose()
-  user: UserResponseDto;
+  userId: number;
 
   @Expose()
   viewCount: number;
