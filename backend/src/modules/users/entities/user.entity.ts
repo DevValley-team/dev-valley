@@ -1,5 +1,14 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from "typeorm";
 import { UserRole } from "./user-role.enum";
+import { Post } from "../../posts/entities/post.entity";
 
 @Entity()
 export class User {
@@ -24,6 +33,9 @@ export class User {
   })
   role: string;
 
+  @OneToMany(() => Post, (post) => post.author)
+  posts: Post[];
+
   @Column({ default: false })
   emailVerified: boolean;
 
@@ -44,5 +56,4 @@ export class User {
 
   @DeleteDateColumn()
   deletedAt: Date;
-
 }
