@@ -1,5 +1,5 @@
 ### 유저 생성
-POST http://localhost:3001/api/auth/signup
+POST {{domain}}/api/auth/signup
 Content-Type: application/json
 
 {
@@ -9,7 +9,7 @@ Content-Type: application/json
 }
 
 ### 유저 로그인
-POST http://localhost:3001/api/auth/login
+POST {{domain}}/api/auth/login
 Content-Type: application/json
 
 {
@@ -18,18 +18,18 @@ Content-Type: application/json
 }
 
 ### 이메일로 유저 찾기
-GET http://localhost:3001/api/users?email=asdasdd@dfss.com
+GET {{domain}}/api/users?email=asdasdd@dfss.com
 
 ### jwt test
-GET http://localhost:3001/api/auth/jwtTest
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhc2Rhc2RkZEBkZnNzLmNvbSIsIm5pY2tuYW1lIjoidGVzdDIiLCJyb2xlIjoidXNlciIsImlhdCI6MTY4MDU5NjYzMiwiZXhwIjoxNjgwNTk2NzUyfQ.bl4YhMemt6WfQKnxPUgBtRqUCy5Pxq6jeXlZ_DY1mck
+GET {{domain}}/api/auth/jwtTest
+Authorization: Bearer {{token}}
 
 ### 유저 삭제
-DELETE http://localhost:3001/api/users/2
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJhc2Rhc2RkQGRmc3MuY29tIiwibmlja25hbWUiOiJ0ZXN0MiIsImlhdCI6MTY4MDQ0NDU5MSwiZXhwIjoxNjgwNDQ0NzExfQ.uzQJFl7SIoJVlfHGa_XzncgpIDT6lViFYvbIHLTPpsk
+DELETE {{domain}}/api/users/2
+Authorization: Bearer {{token}}
 
 ### 관리자 생성
-POST http://localhost:3001/api/auth/signup
+POST {{domain}}/api/auth/signup
 Content-Type: application/json
 
 {
@@ -40,7 +40,7 @@ Content-Type: application/json
 }
 
 ### 관리자 로그인
-POST http://localhost:3001/api/auth/login
+POST {{domain}}/api/auth/login
 Content-Type: application/json
 
 {
@@ -49,5 +49,5 @@ Content-Type: application/json
 }
 
 ### role test
-GET http://localhost:3001/api/auth/roleTest
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJhZG1pbkBhZG1pbi5jb20iLCJuaWNrbmFtZSI6InRlc3QyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjgwNTk2NTY3LCJleHAiOjE2ODA1OTY2ODd9.LVaGk1fuvuhu-WSbGw3SOJQSrE4iIp3pREE3EB3sAE4
+GET {{domain}}/api/auth/roleTest
+Authorization: {{token}}

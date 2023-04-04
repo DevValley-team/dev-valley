@@ -1,0 +1,9 @@
+POST {{domain}}/api/posts
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "My first post",
+  "content": "This is my first post",
+  "categoryId": 1
+}
