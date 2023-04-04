@@ -16,6 +16,7 @@ export class PostsService {
 
   async create(createPostDto: CreatePostDto, userId: number) {
     const { categoryId } = createPostDto;
+    // TODO: categoryService 로 요청
     const category = await this.categoryRepo.findOne({ where: { id: categoryId } });
 
     if (!category) {
@@ -30,7 +31,7 @@ export class PostsService {
 
     const post = this.postRepo.create(createPostDto);
     post.category = category;
-    post.author = user;
+    post.user = user;
     return this.postRepo.save(post);
   }
 

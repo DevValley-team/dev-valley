@@ -10,6 +10,7 @@ import { JwtTokenUserDto } from "./dtos/jwt-token-user.dto";
 import { CurrentUser } from "../../decorators/current-user.decorator";
 import { Roles } from "../../decorators/roles.decorator";
 import { UserRole } from "../users/entities/user-role.enum";
+import { Public } from "./decorators/public.decorator";
 
 @Controller('auth')
 export class AuthController {
@@ -29,11 +30,11 @@ export class AuthController {
   }
 
   @Get('jwtTest')
-  @UseGuards(JwtAuthGuard)
   jwtTest(@CurrentUser() user: JwtTokenUserDto) {
     return user;
   }
 
+  @Public()
   @Get('roleTest')
   @Roles(UserRole.ADMIN)
   roleTest(@CurrentUser() user: JwtTokenUserDto) {

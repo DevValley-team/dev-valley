@@ -3,18 +3,19 @@ import { PostsService } from "./posts.service";
 import { CreatePostDto } from "./dtos/create-post.dto";
 import { CurrentUser } from "../../decorators/current-user.decorator";
 import { JwtTokenUserDto } from "../auth/dtos/jwt-token-user.dto";
-import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
+import { PostResponseDto } from "./dtos/post-response.dto";
+import { Serialize } from "../../interceptors/serialize.interceptor";
 
 @Controller('posts')
 export class PostsController {
   constructor(private postsService: PostsService) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @Serialize(PostResponseDto)
   async create(@Body() body: CreatePostDto, @CurrentUser() user: JwtTokenUserDto) {
-    console.log(body)
     return await this.postsService.create(body, user.id);
   }
 
-}
 
+
+}

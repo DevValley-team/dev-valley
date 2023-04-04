@@ -25,7 +25,7 @@ export class Post {
   category: Category;
 
   @ManyToOne(() => User, (user) => user.posts)
-  author: User;
+  user: User;
 
   @Column({ default: 0 })
   viewCount: number;

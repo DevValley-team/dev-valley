@@ -33,7 +33,7 @@ export class User {
   })
   role: string;
 
-  @OneToMany(() => Post, (post) => post.author)
+  @OneToMany(() => Post, (post) => post.user)
   posts: Post[];
 
   @Column({ default: false })

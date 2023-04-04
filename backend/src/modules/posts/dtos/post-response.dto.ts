@@ -23,7 +23,7 @@ export class PostResponseDto {
   category: CategoryResponseDto;
 
   @Expose()
-  author: UserResponseDto;
+  user: UserResponseDto;
 
   @Expose()
   viewCount: number;

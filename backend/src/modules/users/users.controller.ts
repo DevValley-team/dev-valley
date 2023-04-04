@@ -35,7 +35,6 @@ export class UsersController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
   @HttpCode(204)
   async remove(@Param('id') id: string, @CurrentUser() user: JwtTokenUserDto) {
     return await this.usersService.remove(parseInt(id), user);
