@@ -19,9 +19,6 @@ Content-Type: application/json
 
 ### 이메일로 유저 찾기
 GET {{domain}}/api/users?email=asdasdd@dfss.com
-
-### jwt test
-GET {{domain}}/api/auth/jwtTest
 Authorization: Bearer {{token}}
 
 ### 유저 삭제
@@ -48,6 +45,14 @@ Content-Type: application/json
   "password": "111122223333"
 }
 
-### role test
+### jwt test
+GET {{domain}}/api/auth/jwtTest
+Authorization: Bearer {{token}}
+
+### role test User
 GET {{domain}}/api/auth/roleTest
-Authorization: {{token}}
+Authorization: Bearer {{token}}
+
+### role test ADMIN
+GET {{domain}}/api/auth/roleTest
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJhZG1pbkBhZG1pbi5jb20iLCJuaWNrbmFtZSI6InRlc3QyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjgwNjg5ODk4LCJleHAiOjE2ODA3NzYyOTh9.0RgGsbkmNTjVwf7Nq0oLYOQSgoLEq6wNymaF6Agugrg

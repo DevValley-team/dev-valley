@@ -7,8 +7,8 @@ import { LocalAuthGuard } from "./guards/local-auth.guard";
 import { SignupResponseDto } from "./dtos/signup-response.dto";
 import { Serialize } from "../../interceptors/serialize.interceptor";
 import { JwtTokenUserDto } from "./dtos/jwt-token-user.dto";
-import { CurrentUser } from "../../decorators/current-user.decorator";
-import { Roles } from "../../decorators/roles.decorator";
+import { CurrentUser } from "./decorators/current-user.decorator";
+import { Roles } from "./decorators/roles.decorator";
 import { UserRole } from "../users/entities/user-role.enum";
 import { Public } from "./decorators/public.decorator";
 
@@ -16,6 +16,7 @@ import { Public } from "./decorators/public.decorator";
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Public()
   @Post('login')
   @UseGuards(LocalAuthGuard)
   @HttpCode(200)
@@ -23,6 +24,7 @@ export class AuthController {
     return await this.authService.login(req.user)
   }
 
+  @Public()
   @Post('signup')
   @Serialize(SignupResponseDto)
   async signup(@Body() body: CreateUserDto) {
@@ -34,7 +36,6 @@ export class AuthController {
     return user;
   }
 
-  @Public()
   @Get('roleTest')
   @Roles(UserRole.ADMIN)
   roleTest(@CurrentUser() user: JwtTokenUserDto) {

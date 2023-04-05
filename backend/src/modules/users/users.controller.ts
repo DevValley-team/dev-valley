@@ -15,7 +15,7 @@ import { Serialize } from "../../interceptors/serialize.interceptor";
 import { UserResponseDto } from "./dtos/user-response.dto";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 import { JwtTokenUserDto } from "../auth/dtos/jwt-token-user.dto";
-import { CurrentUser } from "../../decorators/current-user.decorator";
+import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import { Public } from "../auth/decorators/public.decorator";
 
 @Controller('users')
