@@ -7,17 +7,17 @@ import { UserRole } from "./entities/user-role.enum";
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectRepository(User) private repo: Repository<User>) {}
+  constructor(@InjectRepository(User) private usersRepo: Repository<User>) {}
 
   create(dto: CreateUserDto) {
-    const user = this.repo.create(dto);
+    const user = this.usersRepo.create(dto);
 
     user.role = UserRole.USER;
     if (dto.isAdmin) {
       user.role = UserRole.ADMIN;
     }
 
-    return this.repo.save(user);
+    return this.usersRepo.save(user);
   }
 
   async findOneById(id: number) {
@@ -25,7 +25,7 @@ export class UsersService {
       return null;
     }
 
-    return await this.repo.findOne({ where: {id} });
+    return await this.usersRepo.findOne({ where: {id} });
   }
 
   async findOneByEmail(email: string) {
@@ -33,7 +33,7 @@ export class UsersService {
       throw new BadRequestException();
     }
 
-    return await this.repo.findOne({ where: { email } });
+    return await this.usersRepo.findOne({ where: { email } });
   }
 
   async update(id: number, attrs: Partial<User>) {
@@ -44,11 +44,11 @@ export class UsersService {
     }
 
     Object.assign(user, attrs);
-    return this.repo.save(user);
+    return this.usersRepo.save(user);
   }
 
   async remove(id: number, user: any) {
-    const result = await this.repo.softDelete(id);
+    const result = await this.usersRepo.softDelete(id);
     if (user.id !== id) {
       throw new ForbiddenException('You do not have permission to do this.');
     }
@@ -59,4 +59,10 @@ export class UsersService {
 
     return true;
   }
+
+  async updateLastLogInAt(user: User) {
+    user.lastLogInAt = new Date();
+    await this.usersRepo.save(user);
+  }
+
 }

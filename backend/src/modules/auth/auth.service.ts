@@ -24,7 +24,7 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    await this.usersService.update(user.id, { lastLogInAt: new Date() });
+    await this.usersService.updateLastLogInAt(user);
     return user;
   }
 
