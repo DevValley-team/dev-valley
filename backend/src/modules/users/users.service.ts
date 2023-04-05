@@ -61,8 +61,7 @@ export class UsersService {
   }
 
   async updateLastLogInAt(user: User) {
-    user.lastLogInAt = new Date();
-    await this.usersRepo.save(user);
+    await this.usersRepo.update(user.id, { lastLogInAt: new Date() });
   }
 
 }
