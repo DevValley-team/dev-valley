@@ -1,38 +1,50 @@
-import { SnakeNamingStrategy } from "typeorm-naming-strategies";
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { User } from "../modules/users/entities/user.entity";
+import { Post } from "../modules/posts/entities/post.entity";
+import { PostLike } from "../modules/posts/entities/post-like.entity";
+import { Comment } from "../modules/comments/entities/comment.entity";
+import { CommentLike } from "../modules/comments/entities/comment-like.entity";
+import { Category } from "../modules/posts/entities/category.entity";
 
-const ormconfig = {
-  namingStrategy: new SnakeNamingStrategy(),
+const defaultConfig = {
   synchronize: false,
+  namingStrategy: new SnakeNamingStrategy(),
+  entities: [
+    // path.join(__dirname, '../modules/**/entities/*.entity.ts') // 이게 왜 동작을 안하지...?
+    User, Post, Comment, PostLike, CommentLike, Category
+  ],
   migrations: ['migrations/*.js'],
 };
 
-switch (process.env.NODE_ENV) {
-  case 'development':
-    Object.assign(ormconfig, {
-      type: 'sqlite',
-      database: 'db.sqlite',
-      entities: ['**/*.entity.js'],
-      synchronize: true,
-    });
-    break;
-  case 'test':
-    Object.assign(ormconfig, {
-      type: 'sqlite',
-      database: 'test.sqlite',
-      entities: ['**/*.entity.ts'],
-      migrationsRun: true,
-    });
-    break;
-  case 'production':
-    Object.assign(ormconfig, {
-      type: 'postgres',
-      url: process.env.DATABASE_URL,
-      entities: ['**/*.entity.js'],
-      migrationsRun: true,
-    });
-    break;
-  default:
-    throw new Error('unknown environment');
+const envConfigs = {
+  development: {
+    type: 'sqlite',
+    database: 'db.sqlite',
+    synchronize: true,
+    logging: true,
+  },
+  test: {
+    type: 'sqlite',
+    database: 'test.sqlite',
+    migrationsRun: true,
+  },
+  production: {
+    type: 'postgres',
+    url: process.env.DATABASE_URL,
+    migrationsRun: true,
+  },
+};
+
+const currentEnv = process.env.NODE_ENV || 'development';
+const envConfig = envConfigs[currentEnv];
+
+if (!envConfig) {
+  throw new Error('Unknown environment');
 }
+
+const ormconfig = {
+  ...defaultConfig,
+  ...envConfig,
+};
 
 export default ormconfig;

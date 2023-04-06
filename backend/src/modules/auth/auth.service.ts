@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from "../users/users.service";
 import * as bcrypt from 'bcrypt';
-import { CreateUserDto } from "./dtos/create-user.dto";
+import { CreateUserDto } from "../users/dtos/create-user.dto";
 import { JwtService } from "@nestjs/jwt";
 import { LoginUserDto } from "./dtos/login-user.dto";
 import { User } from "../users/entities/user.entity";
@@ -24,7 +24,7 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    await this.usersService.update(user.id, { lastLogInAt: new Date() });
+    await this.usersService.updateLastLogInAt(user);
     return user;
   }
 
@@ -44,7 +44,8 @@ export class AuthService {
   async login(user: User) {
     const payload = { id: user.id,
                       email: user.email,
-                      nickname: user.nickname };
+                      nickname: user.nickname,
+                      role: user.role };
 
     return { accessToken: this.jwtService.sign(payload), };
   }

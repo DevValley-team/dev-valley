@@ -1,0 +1,58 @@
+### 유저 생성
+POST {{domain}}/api/auth/signup
+Content-Type: application/json
+
+{
+  "email": "asdasddd@dfss.com",
+  "password": "111122223333",
+  "nickname": "test2"
+}
+
+### 유저 로그인
+POST {{domain}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "asdasddd@dfss.com",
+  "password": "111122223333"
+}
+
+### 이메일로 유저 찾기
+GET {{domain}}/api/users?email=asdasdd@dfss.com
+Authorization: Bearer {{token}}
+
+### 유저 삭제
+DELETE {{domain}}/api/users/2
+Authorization: Bearer {{token}}
+
+### 관리자 생성
+POST {{domain}}/api/auth/signup
+Content-Type: application/json
+
+{
+  "email": "admin@admin.com",
+  "password": "111122223333",
+  "nickname": "test2",
+  "isAdmin": true
+}
+
+### 관리자 로그인
+POST {{domain}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@admin.com",
+  "password": "111122223333"
+}
+
+### jwt test
+GET {{domain}}/api/auth/jwtTest
+Authorization: Bearer {{token}}
+
+### role test User
+GET {{domain}}/api/auth/roleTest
+Authorization: Bearer {{token}}
+
+### role test ADMIN
+GET {{domain}}/api/auth/roleTest
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJhZG1pbkBhZG1pbi5jb20iLCJuaWNrbmFtZSI6InRlc3QyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjgwNjg5ODk4LCJleHAiOjE2ODA3NzYyOTh9.0RgGsbkmNTjVwf7Nq0oLYOQSgoLEq6wNymaF6Agugrg
