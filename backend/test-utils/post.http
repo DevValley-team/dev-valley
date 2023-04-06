@@ -3,7 +3,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "title": "My first post",
-  "content": "This is my first post",
+  "title": "asdfsdfsadf",
+  "content": "Tsdfadsfasfd",
   "categoryId": 1
 }
