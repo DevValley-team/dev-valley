@@ -61,7 +61,12 @@ export class PostsService {
   }
 
   async update(id: number, updatePostDto: UpdatePostDto) {
-    return await this.postRepository.update(id, updatePostDto);
+    const post = await this.postRepository.findOne({ where: { id } });
+
+    if (!post) throw new Error('Post not found');
+
+    Object.assign(post, updatePostDto);
+    return await this.postRepository.save(post);
   }
 
   async softRemove(id: number, user: JwtTokenUserDto) {
@@ -72,7 +77,7 @@ export class PostsService {
 
     if (!post || user.id !== post.user.id) throw new UnauthorizedException("You are not allowed to delete this post.");
 
-    return this.postRepository.softDelete(id);
+    return this.postRepository.softRemove(post);
   }
 
 }

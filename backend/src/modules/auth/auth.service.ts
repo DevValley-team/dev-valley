@@ -28,9 +28,9 @@ export class AuthService {
   }
 
   async signup(createUserDto: CreateUserDto) {
-    const user = await this.usersService.isEmailTaken(createUserDto.email);
+    const isEmail = await this.usersService.isEmailTaken(createUserDto.email);
 
-    if (user) {
+    if (isEmail) {
       throw new BadRequestException('email in use');
     }
 
