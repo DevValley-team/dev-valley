@@ -15,8 +15,10 @@ export class PostsController {
   constructor(private postsService: PostsService) {}
 
   @Post()
+  @HttpCode(201)
   @Serialize(PostResponseDto)
-  async create(@Body() createPostDto: CreatePostDto, @CurrentUser() user: JwtTokenUserDto) {
+  async create(@Body() createPostDto: CreatePostDto,
+               @CurrentUser() user: JwtTokenUserDto) {
     return await this.postsService.create(createPostDto, user.id);
   }
 
@@ -28,18 +30,23 @@ export class PostsController {
 
   @Public()
   @Get(':id')
+  @Serialize(PostResponseDto)
   findOne(@Param('id') id: string) {
     return this.postsService.findOneById(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
-    return this.postsService.update(+id, updatePostDto);
+  @HttpCode(204)
+  update(@Param('id') id: string,
+         @Body() updatePostDto: UpdatePostDto,
+         @CurrentUser() user: JwtTokenUserDto) {
+    return this.postsService.update(+id, updatePostDto, user);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id') id: string, @CurrentUser() user: JwtTokenUserDto) {
+  remove(@Param('id') id: string,
+         @CurrentUser() user: JwtTokenUserDto) {
     return this.postsService.softRemove(+id, user);
   }
 

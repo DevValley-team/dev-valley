@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Post } from "./entities/post.entity";
@@ -60,22 +60,29 @@ export class PostsService {
     return post;
   }
 
-  async update(id: number, updatePostDto: UpdatePostDto) {
-    const post = await this.postRepository.findOne({ where: { id } });
+  async update(id: number, updatePostDto: UpdatePostDto, user: JwtTokenUserDto) {
+    const post = await this.postRepository.findOne({
+      where: { id },
+      relations: ['user']
+    });
 
-    if (!post) throw new Error('Post not found');
+    if (!post) throw new NotFoundException('Post not found.');
 
-    Object.assign(post, updatePostDto);
-    return await this.postRepository.save(post);
+    if (user.id !== post.user.id) throw new UnauthorizedException('You are not allowed to update this post.');
+
+    const updatedPost = Object.assign(post, updatePostDto);
+    return await this.postRepository.save(updatedPost);
   }
 
   async softRemove(id: number, user: JwtTokenUserDto) {
     const post = await this.postRepository.findOne({
-      relations: ['user'],
-      where: { id }
-    },);
+      where: { id },
+      relations: ['user']
+    });
 
-    if (!post || user.id !== post.user.id) throw new UnauthorizedException("You are not allowed to delete this post.");
+    if (!post) throw new NotFoundException('Post not found.');
+
+    if (user.id !== post.user.id) throw new UnauthorizedException('You are not allowed to update this post.');
 
     return this.postRepository.softRemove(post);
   }
