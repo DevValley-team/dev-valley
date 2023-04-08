@@ -53,10 +53,15 @@ export class PostsService {
   }
 
   async findOneById(id: number) {
-    const post = await this.postRepository.findOne({ where: { id } });
+    const post = await this.postRepository.findOne({
+      where: { id },
+      relations: ['user', 'category']
+    });
 
     if (!post) throw new Error('Post not found');
 
+    // TODO: 조회수 기능 추가
+    
     return post;
   }
 

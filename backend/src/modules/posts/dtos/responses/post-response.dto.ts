@@ -1,4 +1,22 @@
-import { Expose, Transform } from "class-transformer";
+import { Expose, Transform, Type } from "class-transformer";
+import { UserRole } from "../../../users/entities/user-role.enum";
+
+class UserResponse {
+  @Expose()
+  id: number;
+
+  @Expose()
+  email: string;
+
+  @Expose()
+  nickname: string;
+
+  @Expose()
+  experience: number;
+
+  @Expose()
+  role: UserRole;
+}
 
 export class PostResponseDto {
   @Expose()
@@ -14,9 +32,9 @@ export class PostResponseDto {
   @Expose()
   categoryName: string;
 
-  @Transform(({ obj }) => obj.user.id)
+  @Type(() => UserResponse)
   @Expose()
-  userId: number;
+  user: UserResponse;
 
   @Expose()
   viewCount: number;

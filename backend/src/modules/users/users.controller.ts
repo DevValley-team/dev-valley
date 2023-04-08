@@ -15,11 +15,11 @@ import { Public } from "../auth/decorators/public.decorator";
 import { ExistsEmailDto } from "./dtos/exists-email.dto";
 
 @Controller('users')
-@Serialize(UserResponseDto)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('me')
+  @Serialize(UserResponseDto)
   me(@CurrentUser() user: JwtTokenUserDto) {
     return this.usersService.findOneById(user.id);
   }
