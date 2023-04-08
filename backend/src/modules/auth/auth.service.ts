@@ -28,17 +28,19 @@ export class AuthService {
     return user;
   }
 
-  async signup(dto: CreateUserDto) {
-    const user = await this.usersService.findOneByEmail(dto.email);
+  async signup(createUserDto: CreateUserDto) {
+    const user = await this.usersService.findOneByEmail(createUserDto.email);
 
     if (user) {
       throw new BadRequestException('email in use');
     }
 
     const saltRounds = 10;
-    dto.password = await bcrypt.hash(dto.password, saltRounds);
+    createUserDto.password = await bcrypt.hash(createUserDto.password, saltRounds);
 
-    return await this.usersService.create(dto);
+    // TODO: email token;
+
+    return await this.usersService.create(createUserDto);
   }
 
   async login(user: User) {
