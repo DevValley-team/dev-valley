@@ -25,5 +25,5 @@ Content-Type: application/json
 }
 
 ### 게시글 삭제
-DELETE {{domain}}/api/posts/1
+DELETE {{domain}}/api/posts/3
 Authorization: Bearer {{token}}

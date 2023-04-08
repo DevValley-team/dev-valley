@@ -1,16 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Post } from "./entities/post.entity";
-import { Category } from "../categories/entities/category.entity";
 import { CreatePostDto } from "./dtos/create-post.dto";
-import { User } from "../users/entities/user.entity";
-import { JwtTokenUserDto } from "../auth/dtos/jwt-token-user.dto";
 import { UsersService } from "../users/users.service";
-import { UpdateUserDto } from "../users/dtos/update-user.dto";
 import { UpdatePostDto } from "./dtos/update-post.dto";
 import { CategoriesService } from "../categories/categories.service";
 import { GetPostsDto } from "./dtos/get-posts.dto";
+import { JwtTokenUserDto } from "../auth/dtos/jwt-token-user.dto";
 
 @Injectable()
 export class PostsService {
@@ -46,6 +43,7 @@ export class PostsService {
       .where('post.category_id = :categoryId', { categoryId })
       .getCount();
 
+    // TODO: DTO 만들기
     return {
       data: posts,
       page: page,
@@ -66,7 +64,14 @@ export class PostsService {
     return await this.postRepository.update(id, updatePostDto);
   }
 
-  async remove(id: number) {
+  async softRemove(id: number, user: JwtTokenUserDto) {
+    const post = await this.postRepository.findOne({
+      relations: ['user'],
+      where: { id }
+    },);
+
+    if (!post || user.id !== post.user.id) throw new UnauthorizedException("You are not allowed to delete this post.");
+
     return this.postRepository.softDelete(id);
   }
 

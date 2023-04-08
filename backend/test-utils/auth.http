@@ -18,8 +18,7 @@ Content-Type: application/json
 }
 
 ### 이메일로 유저 찾기
-GET {{domain}}/api/users?email=asdasdd@dfss.com
-Authorization: Bearer {{token}}
+GET {{domain}}/api/users?email=asdasddd@dfss.com
 
 ### 유저 삭제
 DELETE {{domain}}/api/users/2

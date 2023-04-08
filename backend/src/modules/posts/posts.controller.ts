@@ -39,8 +39,8 @@ export class PostsController {
 
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id') id: string) {
-    return this.postsService.remove(+id);
+  remove(@Param('id') id: string, @CurrentUser() user: JwtTokenUserDto) {
+    return this.postsService.softRemove(+id, user);
   }
 
 }
