@@ -1,2 +1,2 @@
-### whoami
-GET http://localhost:3001/api/users/whoami?id=1
+### 나의 정보 조회
+GET {{domain}}/api/users/me

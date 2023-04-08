@@ -26,7 +26,7 @@ export class UsersController {
 
   @Public()
   @Get('exists')
-  async isEmailTaken(@Query('email') existsEmailDto: ExistsEmailDto) {
+  async isEmailTaken(@Query() existsEmailDto: ExistsEmailDto) {
     return await this.usersService.isEmailTaken(existsEmailDto.email);
   }
 
