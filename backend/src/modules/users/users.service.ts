@@ -5,6 +5,7 @@ import { Repository } from "typeorm";
 import { CreateUserDto } from "./dtos/create-user.dto";
 import { UserRole } from "./entities/user-role.enum";
 import { ExistsEmailDto } from "./dtos/exists-email.dto";
+import { CurrentUserDto } from "../auth/dtos/current-user.dto";
 
 @Injectable()
 export class UsersService {
@@ -50,8 +51,8 @@ export class UsersService {
     return this.usersRepo.save(user);
   }
 
-  async remove(id: number, user: any): Promise<boolean> {
-    if (user.id !== id) throw new ForbiddenException('You do not have permission to do this.');
+  async remove(id: number, currentUser: CurrentUserDto): Promise<boolean> {
+    if (currentUser.id !== id) throw new ForbiddenException('You do not have permission to do this.');
 
     const result = await this.usersRepo.softDelete(id);
 

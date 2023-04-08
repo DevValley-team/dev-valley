@@ -6,7 +6,7 @@ import { JwtAuthGuard } from "./guards/jwt-auth.guard";
 import { LocalAuthGuard } from "./guards/local-auth.guard";
 import { SignupResponseDto } from "./dtos/signup-response.dto";
 import { Serialize } from "../../interceptors/serialize.interceptor";
-import { JwtTokenUserDto } from "./dtos/jwt-token-user.dto";
+import { CurrentUserDto } from "./dtos/current-user.dto";
 import { CurrentUser } from "./decorators/current-user.decorator";
 import { Roles } from "./decorators/roles.decorator";
 import { UserRole } from "../users/entities/user-role.enum";
@@ -32,14 +32,14 @@ export class AuthController {
   }
 
   @Get('jwtTest')
-  jwtTest(@CurrentUser() user: JwtTokenUserDto) {
-    return user;
+  jwtTest(@CurrentUser() currentUser: CurrentUserDto) {
+    return currentUser;
   }
 
   @Get('roleTest')
   @Roles(UserRole.ADMIN)
-  roleTest(@CurrentUser() user: JwtTokenUserDto) {
-    return user;
+  roleTest(@CurrentUser() currentUser: CurrentUserDto) {
+    return currentUser;
   }
 
 }

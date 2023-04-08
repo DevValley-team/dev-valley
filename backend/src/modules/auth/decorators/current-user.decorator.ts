@@ -1,7 +1,7 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { JwtTokenUserDto } from "../dtos/jwt-token-user.dto";
+import { CurrentUserDto } from "../dtos/current-user.dto";
 
-export const CurrentUser = createParamDecorator((data: any, ctx: ExecutionContext): JwtTokenUserDto => {
+export const CurrentUser = createParamDecorator((data: any, ctx: ExecutionContext): CurrentUserDto => {
   const request = ctx.switchToHttp().getRequest();
   return request.user;
 });

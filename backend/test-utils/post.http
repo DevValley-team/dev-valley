@@ -13,15 +13,16 @@ Content-Type: application/json
 GET {{domain}}/api/posts?categoryId=1&page=1&limit=10
 
 ### 게시글 상세 조회
-GET {{domain}}/api/posts/1
+GET {{domain}}/api/posts/4
 
 ### 게시글 내용 수정
-PATCH {{domain}}/api/posts/1
+PATCH {{domain}}/api/posts/2
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "content": "Update my content"
+  "title": "[공지사항] 하ㄴㄴ하",
+  "categoryId": 2
 }
 
 ### 게시글 삭제

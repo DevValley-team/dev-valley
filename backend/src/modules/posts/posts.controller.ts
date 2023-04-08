@@ -2,8 +2,8 @@ import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Query, Use
 import { PostsService } from "./posts.service";
 import { CreatePostDto } from "./dtos/create-post.dto";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
-import { JwtTokenUserDto } from "../auth/dtos/jwt-token-user.dto";
-import { PostResponseDto } from "./dtos/responses/post-response.dto";
+import { CurrentUserDto } from "../auth/dtos/current-user.dto";
+import { PostDetailsResponseDto } from "./dtos/responses/post-details-response.dto";
 import { Serialize } from "../../interceptors/serialize.interceptor";
 import { UpdateUserDto } from "../users/dtos/update-user.dto";
 import { UpdatePostDto } from "./dtos/update-post.dto";
@@ -16,10 +16,10 @@ export class PostsController {
 
   @Post()
   @HttpCode(201)
-  @Serialize(PostResponseDto)
+  @Serialize(PostDetailsResponseDto)
   async create(@Body() createPostDto: CreatePostDto,
-               @CurrentUser() user: JwtTokenUserDto) {
-    return await this.postsService.create(createPostDto, user.id);
+               @CurrentUser() currentUser: CurrentUserDto) {
+    return await this.postsService.create(createPostDto, currentUser);
   }
 
   @Public()
@@ -30,24 +30,25 @@ export class PostsController {
 
   @Public()
   @Get(':id')
-  @Serialize(PostResponseDto)
-  findOne(@Param('id') id: string) {
-    return this.postsService.findOneById(+id);
+  @Serialize(PostDetailsResponseDto)
+  getPostDetails(@Param('id') id: string,
+                 @CurrentUser() currentUser: CurrentUserDto) {
+    return this.postsService.getPostDetails(+id, currentUser);
   }
 
   @Patch(':id')
   @HttpCode(204)
   update(@Param('id') id: string,
          @Body() updatePostDto: UpdatePostDto,
-         @CurrentUser() user: JwtTokenUserDto) {
-    return this.postsService.update(+id, updatePostDto, user);
+         @CurrentUser() currentUser: CurrentUserDto) {
+    return this.postsService.update(+id, updatePostDto, currentUser);
   }
 
   @Delete(':id')
   @HttpCode(204)
   remove(@Param('id') id: string,
-         @CurrentUser() user: JwtTokenUserDto) {
-    return this.postsService.softRemove(+id, user);
+         @CurrentUser() currentUser: CurrentUserDto) {
+    return this.postsService.softRemove(+id, currentUser);
   }
 
 }
