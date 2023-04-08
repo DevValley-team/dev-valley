@@ -3,7 +3,6 @@ import { UsersService } from "../users/users.service";
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from "../users/dtos/create-user.dto";
 import { JwtService } from "@nestjs/jwt";
-import { LoginUserDto } from "./dtos/login-user.dto";
 import { User } from "../users/entities/user.entity";
 
 @Injectable()
@@ -29,7 +28,7 @@ export class AuthService {
   }
 
   async signup(createUserDto: CreateUserDto) {
-    const user = await this.usersService.findOneByEmail(createUserDto.email);
+    const user = await this.usersService.isEmailTaken(createUserDto.email);
 
     if (user) {
       throw new BadRequestException('email in use');
