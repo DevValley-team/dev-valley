@@ -23,10 +23,14 @@ import { Public } from "../auth/decorators/public.decorator";
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Public()
-  @Get('whoami')
-  whoami(@Query('id') id: string) {
-    return this.usersService.findOneById(parseInt(id));
+  @Get('me')
+  me(@CurrentUser() user: JwtTokenUserDto) {
+    return this.usersService.findOneById(user.id);
+  }
+
+  @Get(':id')
+  findOneById(@Param('id') id: string) {
+    return this.usersService.findOneById(+id);
   }
 
   @Get()
@@ -37,7 +41,7 @@ export class UsersController {
   @Delete(':id')
   @HttpCode(204)
   async remove(@Param('id') id: string, @CurrentUser() user: JwtTokenUserDto) {
-    return await this.usersService.remove(parseInt(id), user);
+    return await this.usersService.remove(+id, user);
   }
 
 }

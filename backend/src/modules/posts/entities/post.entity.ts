@@ -1,6 +1,6 @@
 import {
   Column,
-  CreateDateColumn,
+  CreateDateColumn, DeleteDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
@@ -8,7 +8,7 @@ import {
   UpdateDateColumn
 } from "typeorm";
 import { User } from "../../users/entities/user.entity";
-import { Category } from "../../category/entities/category.entity";
+import { Category } from "../../categories/entities/category.entity";
 
 @Entity()
 export class Post {
@@ -38,4 +38,8 @@ export class Post {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt: Date;
+
 }

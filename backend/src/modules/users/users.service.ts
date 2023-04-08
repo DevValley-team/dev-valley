@@ -21,17 +21,17 @@ export class UsersService {
   }
 
   async findOneById(id: number) {
-    if (!id) {
-      return null;
-    }
+    if (!id) return null;
 
-    return await this.usersRepo.findOne({ where: {id} });
+    const user = await this.usersRepo.findOne({ where: {id} });
+
+    if (!user) throw new NotFoundException('User not found.');
+
+    return user;
   }
 
   async findOneByEmail(email: string) {
-    if (!email) {
-      throw new BadRequestException();
-    }
+    if (!email) throw new BadRequestException();
 
     return await this.usersRepo.findOne({ where: { email } });
   }
@@ -39,9 +39,7 @@ export class UsersService {
   async update(id: number, attrs: Partial<User>) {
     const user = await this.findOneById(id);
 
-    if (!user) {
-      throw new NotFoundException('User not found.');
-    }
+    if (!user) throw new NotFoundException('User not found.');
 
     Object.assign(user, attrs);
     return this.usersRepo.save(user);
@@ -49,13 +47,10 @@ export class UsersService {
 
   async remove(id: number, user: any) {
     const result = await this.usersRepo.softDelete(id);
-    if (user.id !== id) {
-      throw new ForbiddenException('You do not have permission to do this.');
-    }
 
-    if (result.affected === 0) {
-      throw new NotFoundException('User not found.');
-    }
+    if (user.id !== id) throw new ForbiddenException('You do not have permission to do this.');
+
+    if (result.affected === 0) throw new NotFoundException('User not found.');
 
     return true;
   }
