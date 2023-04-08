@@ -8,7 +8,7 @@ import {
 } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { Serialize } from "../../interceptors/serialize.interceptor";
-import { UserResponseDto } from "./dtos/user-response.dto";
+import { UserResponseDto } from "./dtos/responses/user-response.dto";
 import { JwtTokenUserDto } from "../auth/dtos/jwt-token-user.dto";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import { Public } from "../auth/decorators/public.decorator";

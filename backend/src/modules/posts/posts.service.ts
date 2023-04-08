@@ -8,6 +8,7 @@ import { UpdatePostDto } from "./dtos/update-post.dto";
 import { CategoriesService } from "../categories/categories.service";
 import { GetPostsDto } from "./dtos/get-posts.dto";
 import { JwtTokenUserDto } from "../auth/dtos/jwt-token-user.dto";
+import { PostListResponseDto } from "./dtos/responses/post-list-response.dto";
 
 @Injectable()
 export class PostsService {
@@ -32,24 +33,15 @@ export class PostsService {
     const { categoryId, page, limit } = getPostsDto;
     const offset = (page - 1) * limit;
 
-    const posts = await this.postRepository.createQueryBuilder()
-      .where('category_id = :categoryId', { categoryId })
-      .orderBy('id', 'DESC')
+    const [posts, totalPosts] = await this.postRepository.createQueryBuilder('post')
+      .leftJoinAndSelect('post.user', 'user')
+      .where('post.category_id = :categoryId', { categoryId })
+      .orderBy('post.id', 'DESC')
       .skip(offset)
       .take(limit)
-      .getMany();
+      .getManyAndCount();
 
-    const totalPosts = await this.postRepository.createQueryBuilder('post')
-      .where('post.category_id = :categoryId', { categoryId })
-      .getCount();
-
-    // TODO: DTO 만들기
-    return {
-      data: posts,
-      page: page,
-      limit: limit,
-      totalPages: Math.ceil(totalPosts / limit),
-    };
+    return new PostListResponseDto(posts, page, limit, totalPosts);
   }
 
   async findOneById(id: number) {
@@ -61,7 +53,7 @@ export class PostsService {
     if (!post) throw new Error('Post not found');
 
     // TODO: 조회수 기능 추가
-    
+
     return post;
   }
 

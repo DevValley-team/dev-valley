@@ -1,8 +1,8 @@
 import { Expose, Type } from "class-transformer";
 import { UserSummaryResponseDto } from "../../../users/dtos/responses/user-summary-response.dto";
-import { Category } from "../../../categories/entities/category.entity";
+import { Post } from "../../entities/post.entity";
 
-export class PostResponseDto {
+export class PostSummaryResponseDto {
   @Expose()
   id: number;
 
@@ -11,9 +11,6 @@ export class PostResponseDto {
 
   @Expose()
   content: string;
-
-  @Expose()
-  category: Category;
 
   @Expose()
   @Type(() => UserSummaryResponseDto)
@@ -28,6 +25,13 @@ export class PostResponseDto {
   @Expose()
   createdAt: Date;
 
-  @Expose()
-  updatedAt: Date;
+  constructor(post: Post) {
+    this.id = post.id;
+    this.title = post.title;
+    this.content = post.content;
+    this.user = new UserSummaryResponseDto(post.user);
+    this.viewCount = post.viewCount;
+    this.likeCount = post.likeCount;
+    this.createdAt = post.createdAt;
+  }
 }
