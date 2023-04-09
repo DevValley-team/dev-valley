@@ -9,6 +9,9 @@ import {
 } from "typeorm";
 import { UserRole } from "./user-role.enum";
 import { Post } from "../../posts/entities/post.entity";
+import { Comment } from "../../comments/entities/comment.entity";
+import { PostLike } from "../../posts/entities/post-like.entity";
+import { CommentLike } from "../../comments/entities/comment-like.entity";
 
 @Entity()
 export class User {
@@ -21,7 +24,7 @@ export class User {
   @Column()
   password: string;
 
-  @Column()
+  @Column({ unique: true })
   nickname: string;
 
   @Column({ default: 0 })
@@ -33,8 +36,17 @@ export class User {
   })
   role: string;
 
-  @OneToMany(() => Post, (post) => post.user)
+  @OneToMany(type => Post, (post) => post.user)
   posts: Post[];
+
+  @OneToMany(type => Comment, (comment) => comment.user)
+  comments: Comment[];
+
+  @OneToMany(type => PostLike, (postLike) => postLike.user)
+  postLikes: PostLike[];
+
+  @OneToMany(type => CommentLike, (commentLike) => commentLike.user)
+  commentLikes: CommentLike[];
 
   @Column({ default: false })
   emailVerified: boolean;
