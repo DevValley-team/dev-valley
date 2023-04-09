@@ -7,11 +7,11 @@ import {
   Query,
 } from "@nestjs/common";
 import { UsersService } from "./users.service";
-import { Serialize } from "../../interceptors/serialize.interceptor";
+import { Serialize } from "../../common/interceptors/serialize.interceptor";
 import { UserResponseDto } from "./dtos/responses/user-response.dto";
-import { CurrentUserDto } from "../auth/dtos/current-user.dto";
-import { CurrentUser } from "../auth/decorators/current-user.decorator";
-import { Public } from "../auth/decorators/public.decorator";
+import { CurrentUserDto } from "../../common/dtos/current-user.dto";
+import { CurrentUser } from "../../common/decorators/current-user.decorator";
+import { Public } from "../../common/decorators/public.decorator";
 import { ExistsEmailDto } from "./dtos/exists-email.dto";
 
 @Controller('users')

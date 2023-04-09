@@ -1,14 +1,15 @@
 import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Query, UseGuards } from "@nestjs/common";
 import { PostsService } from "./posts.service";
 import { CreatePostDto } from "./dtos/create-post.dto";
-import { CurrentUser } from "../auth/decorators/current-user.decorator";
-import { CurrentUserDto } from "../auth/dtos/current-user.dto";
+import { CurrentUser } from "../../common/decorators/current-user.decorator";
+import { CurrentUserDto } from "../../common/dtos/current-user.dto";
 import { PostDetailsResponseDto } from "./dtos/responses/post-details-response.dto";
-import { Serialize } from "../../interceptors/serialize.interceptor";
+import { Serialize } from "../../common/interceptors/serialize.interceptor";
 import { UpdateUserDto } from "../users/dtos/update-user.dto";
 import { UpdatePostDto } from "./dtos/update-post.dto";
-import { Public } from "../auth/decorators/public.decorator";
+import { Public } from "../../common/decorators/public.decorator";
 import { GetPostsDto } from "./dtos/get-posts.dto";
+import { SerializeAndIsAuthor } from "../../common/interceptors/serialize-and-is-author.interceptor";
 
 @Controller('posts')
 export class PostsController {
@@ -16,7 +17,7 @@ export class PostsController {
 
   @Post()
   @HttpCode(201)
-  @Serialize(PostDetailsResponseDto)
+  @SerializeAndIsAuthor(PostDetailsResponseDto)
   async create(@Body() createPostDto: CreatePostDto,
                @CurrentUser() currentUser: CurrentUserDto) {
     return await this.postsService.create(createPostDto, currentUser);
@@ -30,10 +31,10 @@ export class PostsController {
 
   @Public()
   @Get(':id')
-  @Serialize(PostDetailsResponseDto)
+  @SerializeAndIsAuthor(PostDetailsResponseDto)
   getPostDetails(@Param('id') id: string,
                  @CurrentUser() currentUser: CurrentUserDto) {
-    return this.postsService.getPostDetails(+id, currentUser);
+    return this.postsService.getPostDetails(+id);
   }
 
   @Patch(':id')

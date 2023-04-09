@@ -7,7 +7,7 @@ import { UsersService } from "../users/users.service";
 import { UpdatePostDto } from "./dtos/update-post.dto";
 import { CategoriesService } from "../categories/categories.service";
 import { GetPostsDto } from "./dtos/get-posts.dto";
-import { CurrentUserDto } from "../auth/dtos/current-user.dto";
+import { CurrentUserDto } from "../../common/dtos/current-user.dto";
 import { PostListResponseDto } from "./dtos/responses/post-list-response.dto";
 import { PostDetailsResponseDto } from "./dtos/responses/post-details-response.dto";
 
@@ -23,11 +23,11 @@ export class PostsService {
 
     const user = await this.usersService.findOneById(currentUser.id);
 
-    const post = this.postRepository.create(createPostDto);
+    const post = await this.postRepository.create(createPostDto);
     post.category = category;
     post.user = user;
 
-    return this.postRepository.save(post);
+    return await this.postRepository.save(post);
   }
 
   async findOneById(id: number): Promise<Post> {
@@ -66,7 +66,7 @@ export class PostsService {
 
     if (currentUser.id !== post.user.id) throw new UnauthorizedException('You are not allowed to update this post.');
 
-    const result = this.postRepository.softRemove(post);
+    const result = await this.postRepository.softRemove(post);
     return !!result;
   }
 
@@ -85,12 +85,12 @@ export class PostsService {
     return new PostListResponseDto(posts, page, limit, totalPosts);
   }
 
-  async getPostDetails(id: number, currentUser: CurrentUserDto): Promise<PostDetailsResponseDto> {
+  async getPostDetails(id: number): Promise<Post> {
     const post = await this.findOneById(id);
 
     // TODO: 조회수 기능 추가
 
-    return new PostDetailsResponseDto(post, currentUser);
+    return post
   }
 
 }

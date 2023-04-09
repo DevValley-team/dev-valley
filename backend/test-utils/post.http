@@ -12,11 +12,12 @@ Content-Type: application/json
 ### 게시글 목록 조회
 GET {{domain}}/api/posts?categoryId=1&page=1&limit=10
 
-### 게시글 상세 조회
-GET {{domain}}/api/posts/4
+### 본인 게시글 상세 조회
+GET {{domain}}/api/posts/28
+Authorization: Bearer {{token}}
 
 ### 게시글 내용 수정
-PATCH {{domain}}/api/posts/2
+PATCH {{domain}}/api/posts/28
 Authorization: Bearer {{token}}
 Content-Type: application/json
 

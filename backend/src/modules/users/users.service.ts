@@ -5,7 +5,7 @@ import { Repository } from "typeorm";
 import { CreateUserDto } from "./dtos/create-user.dto";
 import { UserRole } from "./entities/user-role.enum";
 import { ExistsEmailDto } from "./dtos/exists-email.dto";
-import { CurrentUserDto } from "../auth/dtos/current-user.dto";
+import { CurrentUserDto } from "../../common/dtos/current-user.dto";
 
 @Injectable()
 export class UsersService {

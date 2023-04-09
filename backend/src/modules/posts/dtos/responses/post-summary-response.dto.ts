@@ -10,9 +10,6 @@ export class PostSummaryResponseDto {
   title: string;
 
   @Expose()
-  content: string;
-
-  @Expose()
   @Type(() => UserSummaryResponseDto)
   user: UserSummaryResponseDto;
 
@@ -25,10 +22,9 @@ export class PostSummaryResponseDto {
   @Expose()
   createdAt: Date;
 
-  constructor(post: Post) {
+  constructor(post?: Post) {
     this.id = post.id;
     this.title = post.title;
-    this.content = post.content;
     this.user = new UserSummaryResponseDto(post.user);
     this.viewCount = post.viewCount;
     this.likeCount = post.likeCount;
