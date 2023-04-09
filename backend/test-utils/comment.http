@@ -1,0 +1,26 @@
+### 댓글 작성
+POST {{domain}}/api/comments
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "content": "유용한 정보 감사합니다",
+  "postId": 11
+}
+
+### 대댓글 작성
+POST {{domain}}/api/comments
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "content": "유용한 정보 감사합니다",
+  "postId": 11,
+  "parentId": 4
+}
+
+### 댓글 조회
+GET {{domain}}/api/comments?postId=11&page=1&limit=10
+
+### 댓글 조회
+GET {{domain}}/api/comments?postId=11
