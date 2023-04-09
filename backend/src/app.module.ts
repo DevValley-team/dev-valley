@@ -11,6 +11,7 @@ import ormconfig from "./config/ormconfig";
 import configuration from "./config/configuration";
 import { APP_GUARD } from "@nestjs/core";
 import { JwtAuthGuard } from "./modules/auth/guards/jwt-auth.guard";
+import { CategoriesModule } from './modules/categories/categories.module';
 
 @Module({
   controllers: [AppController],
@@ -24,7 +25,8 @@ import { JwtAuthGuard } from "./modules/auth/guards/jwt-auth.guard";
     UsersModule,
     PostsModule,
     CommentsModule,
-    AuthModule
+    AuthModule,
+    CategoriesModule
   ],
   providers: [
     AppService,

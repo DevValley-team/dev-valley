@@ -4,12 +4,14 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { CreateUserDto } from "./dtos/create-user.dto";
 import { UserRole } from "./entities/user-role.enum";
+import { ExistsEmailDto } from "./dtos/exists-email.dto";
+import { CurrentUserDto } from "../../common/dtos/current-user.dto";
 
 @Injectable()
 export class UsersService {
   constructor(@InjectRepository(User) private usersRepo: Repository<User>) {}
 
-  create(dto: CreateUserDto) {
+  create(dto: CreateUserDto): Promise<User> {
     const user = this.usersRepo.create(dto);
 
     user.role = UserRole.USER;
@@ -20,48 +22,52 @@ export class UsersService {
     return this.usersRepo.save(user);
   }
 
-  async findOneById(id: number) {
-    if (!id) {
-      return null;
-    }
+  async findOneById(id: number): Promise<User> {
+    if (!id) return null;
 
-    return await this.usersRepo.findOne({ where: {id} });
+    const user = await this.usersRepo.findOne({ where: {id} });
+
+    if (!user) throw new NotFoundException('User not found.');
+
+    return user;
   }
 
-  async findOneByEmail(email: string) {
-    if (!email) {
-      throw new BadRequestException();
-    }
+  async findOneByEmail(email: string): Promise<User> {
+    if (!email) throw new BadRequestException();
 
-    return await this.usersRepo.findOne({ where: { email } });
+    const user = await this.usersRepo.findOne({ where: { email } });
+
+    if (!user) throw new NotFoundException('User not found.');
+
+    return user;
   }
 
-  async update(id: number, attrs: Partial<User>) {
+  async update(id: number, attrs: Partial<User>): Promise<User> {
     const user = await this.findOneById(id);
 
-    if (!user) {
-      throw new NotFoundException('User not found.');
-    }
+    if (!user) throw new NotFoundException('User not found.');
 
     Object.assign(user, attrs);
     return this.usersRepo.save(user);
   }
 
-  async remove(id: number, user: any) {
-    const result = await this.usersRepo.softDelete(id);
-    if (user.id !== id) {
-      throw new ForbiddenException('You do not have permission to do this.');
-    }
+  async remove(id: number, currentUser: CurrentUserDto): Promise<boolean> {
+    if (currentUser.id !== id) throw new ForbiddenException('You do not have permission to do this.');
 
-    if (result.affected === 0) {
-      throw new NotFoundException('User not found.');
-    }
+    const result = await this.usersRepo.softDelete(id);
+
+    if (result.affected === 0) throw new NotFoundException('User not found.');
 
     return true;
   }
 
-  async updateLastLogInAt(user: User) {
+  async updateLastLogInAt(user: User): Promise<void> {
     await this.usersRepo.update(user.id, { lastLogInAt: new Date() });
+  }
+
+  async isEmailTaken(email: string): Promise<boolean> {
+    const user = await this.usersRepo.findOne({ where: { email } });
+    return !!user;
   }
 
 }

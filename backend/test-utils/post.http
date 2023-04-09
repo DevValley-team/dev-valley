@@ -1,3 +1,4 @@
+### 게시글 작성
 POST {{domain}}/api/posts
 Authorization: Bearer {{token}}
 Content-Type: application/json
@@ -7,3 +8,24 @@ Content-Type: application/json
   "content": "This is my first post",
   "categoryId": 1
 }
+
+### 게시글 목록 조회
+GET {{domain}}/api/posts?categoryId=1&page=1&limit=10
+
+### 본인 게시글 상세 조회
+GET {{domain}}/api/posts/28
+Authorization: Bearer {{token}}
+
+### 게시글 내용 수정
+PATCH {{domain}}/api/posts/28
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "[공지사항] 하ㄴㄴ하",
+  "categoryId": 2
+}
+
+### 게시글 삭제
+DELETE {{domain}}/api/posts/3
+Authorization: Bearer {{token}}

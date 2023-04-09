@@ -1,4 +1,5 @@
-export class JwtTokenUserDto {
+
+export class CurrentUserDto {
   id: number;
   email: string;
   nickname: string;

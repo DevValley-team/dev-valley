@@ -4,7 +4,7 @@ import { Post } from "../modules/posts/entities/post.entity";
 import { PostLike } from "../modules/posts/entities/post-like.entity";
 import { Comment } from "../modules/comments/entities/comment.entity";
 import { CommentLike } from "../modules/comments/entities/comment-like.entity";
-import { Category } from "../modules/posts/entities/category.entity";
+import { Category } from "../modules/categories/entities/category.entity";
 
 const defaultConfig = {
   synchronize: false,

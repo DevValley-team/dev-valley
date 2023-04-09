@@ -5,12 +5,12 @@ import { LoginUserDto } from "./dtos/login-user.dto";
 import { JwtAuthGuard } from "./guards/jwt-auth.guard";
 import { LocalAuthGuard } from "./guards/local-auth.guard";
 import { SignupResponseDto } from "./dtos/signup-response.dto";
-import { Serialize } from "../../interceptors/serialize.interceptor";
-import { JwtTokenUserDto } from "./dtos/jwt-token-user.dto";
-import { CurrentUser } from "./decorators/current-user.decorator";
-import { Roles } from "./decorators/roles.decorator";
+import { Serialize } from "../../common/interceptors/serialize.interceptor";
+import { CurrentUserDto } from "../../common/dtos/current-user.dto";
+import { CurrentUser } from "../../common/decorators/current-user.decorator";
+import { Roles } from "../../common/decorators/roles.decorator";
 import { UserRole } from "../users/entities/user-role.enum";
-import { Public } from "./decorators/public.decorator";
+import { Public } from "../../common/decorators/public.decorator";
 
 @Controller('auth')
 export class AuthController {
@@ -32,14 +32,14 @@ export class AuthController {
   }
 
   @Get('jwtTest')
-  jwtTest(@CurrentUser() user: JwtTokenUserDto) {
-    return user;
+  jwtTest(@CurrentUser() currentUser: CurrentUserDto) {
+    return currentUser;
   }
 
   @Get('roleTest')
   @Roles(UserRole.ADMIN)
-  roleTest(@CurrentUser() user: JwtTokenUserDto) {
-    return user;
+  roleTest(@CurrentUser() currentUser: CurrentUserDto) {
+    return currentUser;
   }
 
 }
