@@ -14,10 +14,10 @@ export class UsersService {
   create(dto: CreateUserDto): Promise<User> {
     const user = this.usersRepo.create(dto);
 
-    user.role = UserRole.USER;
     if (dto.isAdmin) {
       user.role = UserRole.ADMIN;
     }
+    user.role = UserRole.USER;
 
     return this.usersRepo.save(user);
   }

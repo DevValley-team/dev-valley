@@ -8,6 +8,7 @@ import { PostsService } from "../posts/posts.service";
 import { CommentLike } from "./entities/comment-like.entity";
 import { Comment } from "./entities/comment.entity";
 import { GetCommentsDto } from "./dtos/get-comments.dto";
+import { UpdateCommentDto } from "./dtos/update-comment.dto";
 
 @Injectable()
 export class CommentsService {
@@ -35,7 +36,6 @@ export class CommentsService {
 
   async getComments(getCommentsDto: GetCommentsDto): Promise<Comment[]> {
     const { page, limit, postId } = getCommentsDto;
-    console.log(page, limit, postId)
     const offset = (page - 1) * limit;
 
     const [comments, totalComments ] = await this.commentRepository
@@ -52,4 +52,21 @@ export class CommentsService {
     return comments;
   }
 
+  async update(id: number, updateCommentDto: UpdateCommentDto, currentUser: CurrentUserDto): Promise<boolean> {
+    const comment = await this.commentRepository.createQueryBuilder('comment')
+      .select(['comment.id', 'user.id'])
+      .innerJoin('comment.user', 'user')
+      .where('comment.id = :id', { id })
+      .getOne();
+
+    if (!comment) throw new NotFoundException('Comment not found');
+
+    if (currentUser.id !== comment.user.id) throw new NotFoundException('You are not allowed to update this comment.');
+
+    const updatedComment = Object.assign(comment, updateCommentDto);
+    const result = await this.commentRepository.save(updatedComment);
+    return !!result;
+  }
+
+  async
 }

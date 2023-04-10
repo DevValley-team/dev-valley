@@ -7,6 +7,7 @@ import { GetCommentsDto } from "./dtos/get-comments.dto";
 import { Public } from "../../common/decorators/public.decorator";
 import { Serialize } from "../../common/interceptors/serialize.interceptor";
 import { CommentResponseDto } from "./dtos/comment-response.dto";
+import { UpdateCommentDto } from "./dtos/update-comment.dto";
 
 @Controller('comments')
 export class CommentsController {
@@ -28,8 +29,10 @@ export class CommentsController {
 
   @Patch(':id')
   @HttpCode(204)
-  update(@Param('id') id: string) {
-
+  update(@Param('id') id: string,
+         @Body() updateCommentDto: UpdateCommentDto,
+         @CurrentUser() currentUser: CurrentUserDto) {
+    return this.commentsService.update(+id, updateCommentDto, currentUser);
   }
 
   @Delete(':id')
