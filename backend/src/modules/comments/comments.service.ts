@@ -8,7 +8,6 @@ import { PostsService } from "../posts/posts.service";
 import { CommentLike } from "./entities/comment-like.entity";
 import { Comment } from "./entities/comment.entity";
 import { GetCommentsDto } from "./dtos/get-comments.dto";
-import { UpdateCommentDto } from "./dtos/update-comment.dto";
 
 @Injectable()
 export class CommentsService {
@@ -52,7 +51,7 @@ export class CommentsService {
     return comments;
   }
 
-  async update(id: number, updateCommentDto: UpdateCommentDto, currentUser: CurrentUserDto): Promise<boolean> {
+  async update(id: number, attrs: Partial<Comment>, currentUser: CurrentUserDto): Promise<boolean> {
     const comment = await this.commentRepository.createQueryBuilder('comment')
       .select(['comment.id', 'user.id'])
       .innerJoin('comment.user', 'user')
@@ -63,10 +62,9 @@ export class CommentsService {
 
     if (currentUser.id !== comment.user.id) throw new NotFoundException('You are not allowed to update this comment.');
 
-    const updatedComment = Object.assign(comment, updateCommentDto);
+    const updatedComment = Object.assign(comment, attrs);
     const result = await this.commentRepository.save(updatedComment);
     return !!result;
   }
 
-  async
 }

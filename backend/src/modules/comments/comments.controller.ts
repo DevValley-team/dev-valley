@@ -8,6 +8,7 @@ import { Public } from "../../common/decorators/public.decorator";
 import { Serialize } from "../../common/interceptors/serialize.interceptor";
 import { CommentResponseDto } from "./dtos/comment-response.dto";
 import { UpdateCommentDto } from "./dtos/update-comment.dto";
+import { RemoveCommentDto } from "./dtos/remove-comment.dto";
 
 @Controller('comments')
 export class CommentsController {
@@ -39,7 +40,8 @@ export class CommentsController {
   @HttpCode(204)
   remove(@Param('id') id: string,
          @CurrentUser() currentUser: CurrentUserDto) {
-
+    const removeCommentDto = new RemoveCommentDto();
+    return this.commentsService.update(+id, removeCommentDto, currentUser);
   }
 
   @Post(':id/like')
