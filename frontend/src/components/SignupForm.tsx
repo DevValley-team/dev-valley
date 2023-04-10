@@ -1,77 +1,117 @@
-import { useRouter } from "next/router";
-import { useState, FormEvent } from "react";
 import styled from "styled-components";
+import axios from "axios";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/router";
+import WarningAlert from "./Alert/InformTimerAlert";
 
 interface ISingupData {
   email: string;
   password: string;
+  passwordConfirm: string;
   nickname: string;
 }
 
 export default function SignupForm() {
-  const [formData, setFormData] = useState<ISingupData>({
-    email: "",
-    password: "",
-    nickname: "",
-  });
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+    setError,
+  } = useForm<ISingupData>();
   const router = useRouter();
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    try {
-      const res = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-      if (res.ok) {
-        router.push("/login");
-      } else {
-        const { message } = await res.json();
-        throw new Error(message);
+  const onVaild = async (data: ISingupData) => {
+    if (data.password !== data.passwordConfirm) {
+      setError(
+        "passwordConfirm",
+        { message: "* 비밀번호가 일치하지 않음" },
+        {
+          shouldFocus: true,
+        }
+      );
+    } else {
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/signup`,
+        {
+          email: data.email,
+          password: data.password,
+          nickname: data.nickname,
+        }
+      );
+      if (res.status === 201) {
+        WarningAlert("로그인 화면으로 이동합니다.", 2000);
+        setInterval(() => {
+          router.push("/login");
+        }, 2000);
       }
-    } catch (error) {
-      console.error(error);
     }
   };
 
   return (
-    <RegisterForm onSubmit={handleSubmit}>
-      <RegisterLabel>이메일</RegisterLabel>
+    <RegisterForm onSubmit={handleSubmit(onVaild)}>
+      <RegisterLabel>
+        이메일 <ErrMsg>{errors?.email?.message}</ErrMsg>
+      </RegisterLabel>
       <Input
-        value={formData.email}
-        name="email"
+        {...register("email", {
+          required: "* 필수 입력",
+        })}
         type="email"
-        placeholder="user@naver.com"
-        onChange={handleChange}
+        placeholder="user@email.com"
       />
-      <RegisterLabel>비밀번호</RegisterLabel>
+      <RegisterLabel>
+        비밀번호 <ErrMsg>{errors?.password?.message}</ErrMsg>
+      </RegisterLabel>
       <Input
-        value={formData.password}
-        name="password"
+        {...register("password", {
+          required: "* 필수 입력",
+          minLength: {
+            value: 8,
+            message: "* 8자 이상",
+          },
+          maxLength: {
+            value: 32,
+            message: "* 32자 이하",
+          },
+        })}
         type="password"
-        placeholder="최소 8자 이상"
-        onChange={handleChange}
+        placeholder="최소 8자 이상 최대 32자 이하"
       />
-      <RegisterLabel>닉네임</RegisterLabel>
+      <RegisterLabel>
+        비밀번호 확인 <ErrMsg>{errors?.passwordConfirm?.message}</ErrMsg>
+      </RegisterLabel>
       <Input
-        value={formData.nickname}
-        name="nickname"
-        type="nickname"
-        placeholder="10자 미만으로 입력해주세요"
-        onChange={handleChange}
+        {...register("passwordConfirm", {
+          required: "* 필수 입력",
+          minLength: {
+            value: 8,
+            message: "* 8자 이상",
+          },
+          maxLength: {
+            value: 32,
+            message: "* 32자 이하",
+          },
+        })}
+        type="password"
+        placeholder="비밀번호를 한번 더 입력해주세요"
+      />
+      <RegisterLabel>
+        닉네임<ErrMsg>{errors?.nickname?.message}</ErrMsg>
+      </RegisterLabel>
+      <Input
+        {...register("nickname", {
+          required: "* 필수 입력",
+          minLength: {
+            value: 3,
+            message: "* 3자 이상",
+          },
+          maxLength: {
+            value: 8,
+            message: "* 8자 이하",
+          },
+        })}
+        type="text"
+        placeholder="최소 3자 이상 최대 8자 이하"
       />
       <EmailSingupBtn type="submit">이메일로 계속하기</EmailSingupBtn>
     </RegisterForm>
@@ -124,4 +164,8 @@ const EmailSingupBtn = styled.button`
     background-color: ${(props) => props.theme.btnFocusColor};
     transition: 0.2s;
   }
+`;
+
+const ErrMsg = styled.span`
+  color: red;
 `;
