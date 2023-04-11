@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards, Request, HttpCode } from "@nestjs/common";
+import { Body, Controller, Get, Post, UseGuards, Request, HttpCode, Param } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { CreateUserDto } from "../users/dtos/create-user.dto";
 import { LoginUserDto } from "./dtos/login-user.dto";
@@ -29,6 +29,16 @@ export class AuthController {
   @Serialize(SignupResponseDto)
   async signup(@Body() body: CreateUserDto) {
     return await this.authService.signup(body);
+  }
+
+  @Get('mailTest')
+  async mailTest() {
+    return await this.authService.mailTest();
+  }
+
+  @Get(':email/emailAuth/:code')
+  async emailAuth(@Param('email') email: string, @Param('code') code: string) {
+    return 'success';
   }
 
   @Get('jwtTest')

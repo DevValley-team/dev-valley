@@ -3,7 +3,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  OneToMany,
+  OneToMany, OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from "typeorm";
@@ -12,6 +12,7 @@ import { Post } from "../../posts/entities/post.entity";
 import { Comment } from "../../comments/entities/comment.entity";
 import { PostLike } from "../../posts/entities/post-like.entity";
 import { CommentLike } from "../../comments/entities/comment-like.entity";
+import { EmailVerification } from "./email-verification.entity";
 
 @Entity()
 export class User {
@@ -36,6 +37,9 @@ export class User {
   })
   role: string;
 
+  @OneToOne(() => EmailVerification, (emailVerification) => emailVerification.user)
+  emailVerification: EmailVerification;
+
   @OneToMany(type => Post, (post) => post.user)
   posts: Post[];
 
@@ -47,15 +51,6 @@ export class User {
 
   @OneToMany(type => CommentLike, (commentLike) => commentLike.user)
   commentLikes: CommentLike[];
-
-  @Column({ default: false })
-  emailVerified: boolean;
-
-  @Column({ nullable: true })
-  emailVerificationToken: string;
-
-  @Column({ nullable: true })
-  emailVerificationTokenExpiresAt: Date;
 
   @Column({ nullable: true })
   lastLogInAt: Date;

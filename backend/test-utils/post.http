@@ -4,7 +4,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "title": "Lorem Ipsum is si",
+  "title": "Lorem Ipsum is si2222233344445555566666777",
   "content": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
   "categoryId": 2
 }
@@ -13,7 +13,7 @@ Content-Type: application/json
 GET {{domain}}/api/posts?categoryId=2&page=1&limit=10
 
 ### 본인 게시글 상세 조회
-GET {{domain}}/api/posts/11
+GET {{domain}}/api/posts/2
 Authorization: Bearer {{token}}
 
 ### 게시글 내용 수정

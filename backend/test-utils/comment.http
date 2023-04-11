@@ -5,7 +5,7 @@ Content-Type: application/json
 
 {
   "content": "유용한 정보 감사합니다",
-  "postId": 11
+  "postId": 2
 }
 
 ### 대댓글 작성
@@ -15,12 +15,25 @@ Content-Type: application/json
 
 {
   "content": "유용한 정보 감사합니다",
-  "postId": 11,
-  "parentId": 4
+  "postId": 2,
+  "parentId": 3
 }
 
 ### 댓글 조회
-GET {{domain}}/api/comments?postId=11&page=1&limit=10
+GET {{domain}}/api/comments?postId=2&page=1&limit=10
 
 ### 댓글 조회
-GET {{domain}}/api/comments?postId=11
+GET {{domain}}/api/comments?postId=2
+
+### 댓글 수정
+PATCH {{domain}}/api/comments/3
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "content": "[수정 수정 수정]"
+}
+
+### 댓글 삭제
+DELETE {{domain}}/api/comments/2
+Authorization: Bearer {{token}}

@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Email Confirmation</title>
+</head>
+<body>
+  <h1>Hello, {{username}}!</h1>
+  <p>Please confirm your email by clicking the link below: {{code}}</p>
+  <a href="/api/auth/{{email}}/emailAuth/{{code}}">Confirm your email</a>
+</body>
+</html>

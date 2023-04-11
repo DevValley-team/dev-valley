@@ -5,13 +5,14 @@ import { PostLike } from "../modules/posts/entities/post-like.entity";
 import { Comment } from "../modules/comments/entities/comment.entity";
 import { CommentLike } from "../modules/comments/entities/comment-like.entity";
 import { Category } from "../modules/categories/entities/category.entity";
+import { EmailVerification } from "../modules/users/entities/email-verification.entity";
 
 const defaultConfig = {
   synchronize: false,
   namingStrategy: new SnakeNamingStrategy(),
   entities: [
     // path.join(__dirname, '../modules/**/entities/*.entity.ts') // 이게 왜 동작을 안하지...?
-    User, Post, Comment, PostLike, CommentLike, Category
+    User, Post, Comment, PostLike, CommentLike, Category, EmailVerification
   ],
   migrations: ['migrations/*.js'],
 };
