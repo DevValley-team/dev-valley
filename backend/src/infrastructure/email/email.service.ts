@@ -5,13 +5,12 @@ import { MailerService } from "@nestjs-modules/mailer";
 export class EmailService {
   constructor(private readonly mailerService: MailerService) {}
 
-  public async mailTest(config) {
-    this.mailerService
-      .sendMail(config)
-      .then(() => {
-        console.log('Mail sent successfully!')})
-      .catch((e) => {
-        console.log('Mail sent failed!', e)
-      });
+  public async send(config): Promise<void> {
+    try {
+      await this.mailerService.sendMail(config);
+    } catch (error) {
+      throw new Error('Mail sent failed!' + error);
+    }
   }
+
 }

@@ -4,14 +4,13 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { CreateUserDto } from "./dtos/create-user.dto";
 import { UserRole } from "./entities/user-role.enum";
-import { ExistsEmailDto } from "./dtos/exists-email.dto";
 import { CurrentUserDto } from "../../common/dtos/current-user.dto";
 
 @Injectable()
 export class UsersService {
   constructor(@InjectRepository(User) private usersRepo: Repository<User>) {}
 
-  create(dto: CreateUserDto): Promise<User> {
+  async create(dto: CreateUserDto): Promise<User> {
     const user = this.usersRepo.create(dto);
 
     if (dto.isAdmin) {
@@ -19,7 +18,7 @@ export class UsersService {
     }
     user.role = UserRole.USER;
 
-    return this.usersRepo.save(user);
+    return await this.usersRepo.save(user);
   }
 
   async findOneById(id: number): Promise<User> {
@@ -69,5 +68,4 @@ export class UsersService {
     const user = await this.usersRepo.findOne({ where: { email } });
     return !!user;
   }
-
 }

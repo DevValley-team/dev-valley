@@ -7,11 +7,14 @@ import { JwtModule } from "@nestjs/jwt";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { PassportModule } from "@nestjs/passport";
 import { LocalStrategy } from "./strategies/local.strategy";
-import { MailerModule } from "@nestjs-modules/mailer";
 import { EmailModule } from "../../infrastructure/email/email.module";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { EmailVerification } from "./entities/email-verification.entity";
+import { EmailVerificationService } from "./email-verification.service";
 
 @Module({
   imports: [
+    TypeOrmModule.forFeature([EmailVerification]),
     ConfigModule,
     UsersModule,
     PassportModule,
@@ -26,6 +29,11 @@ import { EmailModule } from "../../infrastructure/email/email.module";
     EmailModule
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, LocalStrategy],
+  providers: [
+    AuthService,
+    EmailVerificationService,
+    JwtStrategy,
+    LocalStrategy
+  ],
 })
 export class AuthModule {}

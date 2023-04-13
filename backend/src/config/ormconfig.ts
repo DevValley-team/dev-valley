@@ -5,7 +5,7 @@ import { PostLike } from "../modules/posts/entities/post-like.entity";
 import { Comment } from "../modules/comments/entities/comment.entity";
 import { CommentLike } from "../modules/comments/entities/comment-like.entity";
 import { Category } from "../modules/categories/entities/category.entity";
-import { EmailVerification } from "../modules/users/entities/email-verification.entity";
+import { EmailVerification } from "../modules/auth/entities/email-verification.entity";
 
 const defaultConfig = {
   synchronize: false,

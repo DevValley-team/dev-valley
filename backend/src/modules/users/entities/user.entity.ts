@@ -12,7 +12,7 @@ import { Post } from "../../posts/entities/post.entity";
 import { Comment } from "../../comments/entities/comment.entity";
 import { PostLike } from "../../posts/entities/post-like.entity";
 import { CommentLike } from "../../comments/entities/comment-like.entity";
-import { EmailVerification } from "./email-verification.entity";
+import { EmailVerification } from "../../auth/entities/email-verification.entity";
 
 @Entity()
 export class User {

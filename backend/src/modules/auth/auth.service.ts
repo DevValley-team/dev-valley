@@ -6,12 +6,13 @@ import { JwtService } from "@nestjs/jwt";
 import { User } from "../users/entities/user.entity";
 import { CurrentUserDto } from "../../common/dtos/current-user.dto";
 import { EmailService } from "../../infrastructure/email/email.service";
+import { EmailVerificationService } from "./email-verification.service";
 
 @Injectable()
 export class AuthService {
   constructor(private readonly usersService: UsersService,
-              private readonly jwtService: JwtService,
-              private readonly emailService: EmailService) {}
+              private readonly emailVerificationService: EmailVerificationService,
+              private readonly jwtService: JwtService) {}
 
   async validateUser(email: string, password: string) {
     const user = await this.usersService.findOneByEmail(email);
@@ -40,9 +41,11 @@ export class AuthService {
     const saltRounds = 10;
     createUserDto.password = await bcrypt.hash(createUserDto.password, saltRounds);
 
-    // TODO: email token;
+    const result = await this.usersService.create(createUserDto);
 
-    return await this.usersService.create(createUserDto);
+    await this.emailVerificationService.createEmailVerification(result);
+
+    return result;
   }
 
   async login(user: User) {
@@ -53,18 +56,4 @@ export class AuthService {
 
     return { accessToken: this.jwtService.sign(payload), };
   }
-
-  public async mailTest() {
-    return await this.emailService.mailTest({
-      to: 'test@test.com',
-      subject: 'Testing Nest MailerModule ✔',
-      template: 'auth-code.hbs',
-      context: {
-        email: 'test2@test.com',
-        username: 'test',
-        code: 'haha'
-      }
-    })
-  }
-
 }

@@ -3,6 +3,6 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "name": "자유게시판"
+  "name": "Q&A"
 }
 
