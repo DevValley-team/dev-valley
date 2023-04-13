@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, ParseIntPipe, Patch, Post, Query } from "@nestjs/common";
 import { CreateCommentDto } from "./dtos/create-comment.dto";
 import { CommentsService } from "./comments.service";
 import { CurrentUser } from "../../common/decorators/current-user.decorator";
@@ -30,27 +30,27 @@ export class CommentsController {
 
   @Patch(':id')
   @HttpCode(204)
-  update(@Param('id') id: string,
+  update(@Param('id', ParseIntPipe) id: number,
          @Body() updateCommentDto: UpdateCommentDto,
          @CurrentUser() currentUser: CurrentUserDto) {
-    return this.commentsService.update(+id, updateCommentDto, currentUser);
+    return this.commentsService.update(id, updateCommentDto, currentUser);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id') id: string,
+  remove(@Param('id', ParseIntPipe) id: number,
          @CurrentUser() currentUser: CurrentUserDto) {
     const removeCommentDto = new RemoveCommentDto();
-    return this.commentsService.update(+id, removeCommentDto, currentUser);
+    return this.commentsService.update(id, removeCommentDto, currentUser);
   }
 
   @Post(':id/like')
-  like(@Param('id') id: string) {
+  like(@Param('id', ParseIntPipe) id: number) {
 
   }
 
   @Delete(':id/like')
-  dislike(@Param('id') id: string) {
+  dislike(@Param('id', ParseIntPipe) id: number) {
 
   }
 

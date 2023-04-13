@@ -15,8 +15,8 @@ export default () => ({
       port: parseInt(process.env.MAILER_PORT, 10) || 587,
       secure: process.env.MAILER_SECURE || false,
       auth: {
-        user: process.env.MAILER_USERNAME,
-        pass: process.env.MAILER_PASSWORD
+        user: process.env.MAILER_USERNAME || '',
+        pass: process.env.MAILER_PASSWORD || ''
       }
     }
   }
