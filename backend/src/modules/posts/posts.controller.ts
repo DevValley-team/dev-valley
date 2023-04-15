@@ -9,15 +9,12 @@ import {
   Patch,
   Post,
   Query,
-  UseGuards
 } from "@nestjs/common";
 import { PostsService } from "./posts.service";
 import { CreatePostDto } from "./dtos/create-post.dto";
 import { CurrentUser } from "../../common/decorators/current-user.decorator";
 import { CurrentUserDto } from "../../common/dtos/current-user.dto";
 import { PostDetailsResponseDto } from "./dtos/responses/post-details-response.dto";
-import { Serialize } from "../../common/interceptors/serialize.interceptor";
-import { UpdateUserDto } from "../users/dtos/update-user.dto";
 import { UpdatePostDto } from "./dtos/update-post.dto";
 import { Public } from "../../common/decorators/public.decorator";
 import { GetPostsDto } from "./dtos/get-posts.dto";

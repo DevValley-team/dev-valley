@@ -21,7 +21,7 @@ async function bootstrap() {
     .addTag('개발자의 협곡')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('api-document', app, document);
 
   await app.listen(configService.get<number>('app.port'));
 }
