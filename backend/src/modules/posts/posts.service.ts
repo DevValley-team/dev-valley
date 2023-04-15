@@ -31,12 +31,9 @@ export class PostsService {
   }
 
   async findOneById(id: number): Promise<Post> {
-    const post = await this.postRepository.findOne({
-      where: { id },
-      relations: ['user', 'category']
-    });
+    const post = await this.postRepository.findOne({ where: { id } });
 
-    if (!post) throw new Error('Post not found');
+    if (!post) throw new NotFoundException('Post not found');
 
     return post;
   }
@@ -86,7 +83,12 @@ export class PostsService {
   }
 
   async getPostDetails(id: number): Promise<Post> {
-    const post = await this.findOneById(id);
+    const post = await this.postRepository.findOne({
+      where: { id },
+      relations: ['user', 'category']
+    });
+
+    if (!post) throw new NotFoundException('Post not found');
 
     // TODO: 조회수 기능 추가
 

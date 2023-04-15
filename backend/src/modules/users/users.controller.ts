@@ -3,8 +3,8 @@ import {
   Delete,
   Get,
   HttpCode,
-  Param,
-  Query,
+  Param, ParseIntPipe,
+  Query
 } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { Serialize } from "../../common/interceptors/serialize.interceptor";
@@ -27,14 +27,14 @@ export class UsersController {
   @Public()
   @Get('exists')
   async isEmailTaken(@Query() existsEmailDto: ExistsEmailDto) {
-    return await this.usersService.isEmailTaken(existsEmailDto.email);
+    return await this.usersService.isEmailExists(existsEmailDto.email);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  async remove(@Param('id') id: string,
+  async remove(@Param('id', ParseIntPipe) id: number,
                @CurrentUser() currentUser: CurrentUserDto) {
-    return await this.usersService.remove(+id, currentUser);
+    return await this.usersService.remove(id, currentUser);
   }
 
 }

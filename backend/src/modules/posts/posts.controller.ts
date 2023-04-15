@@ -1,4 +1,16 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Query, UseGuards } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Query,
+  UseGuards
+} from "@nestjs/common";
 import { PostsService } from "./posts.service";
 import { CreatePostDto } from "./dtos/create-post.dto";
 import { CurrentUser } from "../../common/decorators/current-user.decorator";
@@ -32,24 +44,24 @@ export class PostsController {
   @Public()
   @Get(':id')
   @SerializeAndIsAuthor(PostDetailsResponseDto)
-  getPostDetails(@Param('id') id: string,
+  getPostDetails(@Param('id', ParseIntPipe) id: number,
                  @CurrentUser() currentUser: CurrentUserDto) {
-    return this.postsService.getPostDetails(+id);
+    return this.postsService.getPostDetails(id);
   }
 
   @Patch(':id')
   @HttpCode(204)
-  update(@Param('id') id: string,
+  update(@Param('id', ParseIntPipe) id: number,
          @Body() updatePostDto: UpdatePostDto,
          @CurrentUser() currentUser: CurrentUserDto) {
-    return this.postsService.update(+id, updatePostDto, currentUser);
+    return this.postsService.update(id, updatePostDto, currentUser);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id') id: string,
+  remove(@Param('id', ParseIntPipe) id: number,
          @CurrentUser() currentUser: CurrentUserDto) {
-    return this.postsService.softRemove(+id, currentUser);
+    return this.postsService.softRemove(id, currentUser);
   }
 
 }

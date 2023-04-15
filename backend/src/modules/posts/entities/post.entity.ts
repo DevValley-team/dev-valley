@@ -1,7 +1,7 @@
 import {
   Column,
   CreateDateColumn, DeleteDateColumn,
-  Entity,
+  Entity, JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -9,26 +9,34 @@ import {
 } from "typeorm";
 import { User } from "../../users/entities/user.entity";
 import { Category } from "../../categories/entities/category.entity";
+import { Comment } from "../../comments/entities/comment.entity";
+import { PostLike } from "./post-like.entity";
 
 @Entity()
 export class Post {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ length: 50 })
   title: string;
 
-  @Column()
+  @Column({ type: 'text' })
   content: string;
 
-  @ManyToOne(() => Category, (category) => category.posts)
+  @ManyToOne(type => Category, (category) => category.posts)
   category: Category;
 
-  @ManyToOne(() => User, (user) => user.posts)
+  @ManyToOne(type => User, (user) => user.posts)
   user: User;
+
+  @OneToMany(type => Comment, (comment) => comment.post, { onDelete: 'CASCADE' })
+  comments: Comment[];
 
   @Column({ default: 0 })
   viewCount: number;
+
+  @OneToMany(type => PostLike, (postLike) => postLike.post, { onDelete: 'CASCADE' })
+  postLikes: PostLike[];
 
   @Column({ default: 0 })
   likeCount: number;
@@ -41,5 +49,4 @@ export class Post {
 
   @DeleteDateColumn()
   deletedAt: Date;
-
 }

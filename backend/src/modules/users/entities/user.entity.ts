@@ -3,12 +3,16 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  OneToMany,
+  OneToMany, OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from "typeorm";
 import { UserRole } from "./user-role.enum";
 import { Post } from "../../posts/entities/post.entity";
+import { Comment } from "../../comments/entities/comment.entity";
+import { PostLike } from "../../posts/entities/post-like.entity";
+import { CommentLike } from "../../comments/entities/comment-like.entity";
+import { AuthUser } from "./auth-user.entity";
 
 @Entity()
 export class User {
@@ -21,7 +25,7 @@ export class User {
   @Column()
   password: string;
 
-  @Column()
+  @Column({ unique: true })
   nickname: string;
 
   @Column({ default: 0 })
@@ -33,17 +37,20 @@ export class User {
   })
   role: string;
 
-  @OneToMany(() => Post, (post) => post.user)
+  @OneToOne(() => AuthUser, (authUser) => authUser.user)
+  authUser: AuthUser;
+
+  @OneToMany(type => Post, (post) => post.user)
   posts: Post[];
 
-  @Column({ default: false })
-  emailVerified: boolean;
+  @OneToMany(type => Comment, (comment) => comment.user)
+  comments: Comment[];
 
-  @Column({ nullable: true })
-  emailVerificationToken: string;
+  @OneToMany(type => PostLike, (postLike) => postLike.user)
+  postLikes: PostLike[];
 
-  @Column({ nullable: true })
-  emailVerificationTokenExpiresAt: Date;
+  @OneToMany(type => CommentLike, (commentLike) => commentLike.user)
+  commentLikes: CommentLike[];
 
   @Column({ nullable: true })
   lastLogInAt: Date;
