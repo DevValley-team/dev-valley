@@ -3,9 +3,9 @@ POST {{domain}}/api/auth/signup
 Content-Type: application/json
 
 {
-  "email": "qudgh4290@gmail.com",
+  "email": "asdasddd@dfss.com",
   "password": "111122223333",
-  "nickname": "test3"
+  "nickname": "test4"
 }
 
 ### 유저 로그인

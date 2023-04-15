@@ -59,6 +59,17 @@ export class UsersService {
     return this.userRepository.save(user);
   }
 
+  async updateLastLogInAt(user: User): Promise<void> {
+    await this.userRepository.update(user.id, { lastLogInAt: new Date() });
+  }
+
+  async updateRole(id: number, role: UserRole) {
+    return await this.userRepository.update(id, {
+      role,
+      updatedAt: new Date()
+    });
+  }
+
   async remove(id: number, currentUser: CurrentUserDto): Promise<boolean> {
     if (currentUser.id !== id) throw new ForbiddenException('You do not have permission to do this.');
 
@@ -69,15 +80,11 @@ export class UsersService {
     return true;
   }
 
-  async updateLastLogInAt(user: User): Promise<void> {
-    await this.userRepository.update(user.id, { lastLogInAt: new Date() });
-  }
-
   async isEmailExists(email: string): Promise<boolean> {
     return !!await this.userRepository.findOne({ where: { email } });
   }
 
-  async updateRole(id: number, role: UserRole) {
-    return await this.userRepository.update(id, { role });
+  async isNicknameExists(nickname: string): Promise<boolean> {
+    return !!await this.userRepository.findOne({ where: { nickname } });
   }
 }

@@ -51,7 +51,7 @@ export class AuthController {
 
   @Public()
   @Get('verify-email')
-  @Redirect('http://localhost:3000')
+  @Redirect('http://localhost:3000') // TODO: 이메일 인증 완료 페이지로 리다이렉트
   async verifyEmail(@Query() query: VerifyEmailDto) {
     return await this.authService.verifyEmail(query);
   }

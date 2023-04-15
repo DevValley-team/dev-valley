@@ -1,6 +1,6 @@
 export default () => ({
   app: {
-    endpoint: process.env.ENDPOINT || "http://localhost:3000/api",
+    endpoint: process.env.ENDPOINT || "http://localhost:3000",
     host: process.env.HOST || "localhost",
     port: parseInt(process.env.PORT, 10) || 3000,
     clientUrl: process.env.CLIENT_URL || ['*', "http://localhost:3000"],
@@ -13,6 +13,7 @@ export default () => ({
 
   },
   mailer: {
+    from: 'Dev Valley <>',
     transport: {
       host: process.env.MAILER_HOST || 'smtp.gmail.com',
       port: parseInt(process.env.MAILER_PORT, 10) || 587,

@@ -38,9 +38,13 @@ export class AuthService {
   }
 
   async signup(createUserDto: CreateUserDto) {
-    const isEmail = await this.usersService.isEmailExists(createUserDto.email);
+    const isEmailExists = await this.usersService.isEmailExists(createUserDto.email);
 
-    if (isEmail) throw new BadRequestException('이메일을 이미 사용중입니다.');
+    if (isEmailExists) throw new BadRequestException('이메일을 이미 사용중입니다.');
+
+    const isNicknameExists = await this.usersService.isNicknameExists(createUserDto.nickname);
+
+    if (isNicknameExists) throw new BadRequestException('닉네임을 이미 사용중입니다.');
 
     const saltRounds = 10;
     createUserDto.password = await bcrypt.hash(createUserDto.password, saltRounds);
@@ -139,12 +143,13 @@ export class AuthService {
 
     const token = await uuidv4();
     authUser.emailToken = token;
-    authUser.emailTokenExpiresIn = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    authUser.emailTokenExpiresIn = new Date(Date.now() + 60 * 60 * 1000); // 1h
 
     const updateAuthUser = await this.authUserRepository.save(authUser);
 
     const option = new EmailVerificationDto();
-    option.verificationLink = `http://localhost:3000/api/auth/verify-email?token=${token}&id=${id}`; // TODO: config 적용
+    option.verificationLink =
+      `${this.configService.get<string>('app.endpoint')}/api/auth/verify-email?token=${token}&id=${id}`;
     option.nickname = nickname;
 
     await this.emailService.sendEmailVerification(option);
