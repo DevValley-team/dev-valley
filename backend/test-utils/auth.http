@@ -22,7 +22,7 @@ GET {{domain}}/api/users/exists?email=asdasddd@dfss.com
 
 ### 유저 삭제
 DELETE {{domain}}/api/users/2
-Authorization: Bearer {{token}}
+Authorization: Bearer {{accessToken}}
 
 ### 관리자 생성
 POST {{domain}}/api/auth/signup
@@ -44,18 +44,22 @@ Content-Type: application/json
   "password": "111122223333"
 }
 
+### Refresh Test
+POST {{domain}}/api/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhc2Rhc2RkZEBkZnNzLmNvbSIsIm5pY2tuYW1lIjoidGVzdDIiLCJyb2xlIjoidXNlciIsImlhdCI6MTY4MTUzMjg1MCwiZXhwIjoxNjgyNzQyNDUwfQ.bIMYfrvi66c4hc0AO49J08kUoqvVNYB71UKGHTDbAdc"
+}
+
 ### jwt test
 GET {{domain}}/api/auth/jwtTest
-Authorization: Bearer {{token}}
+Authorization: Bearer {{accessToken}}
 
 ### role test User
 GET {{domain}}/api/auth/roleTest
-Authorization: Bearer {{token}}
+Authorization: Bearer {{accessToken}}
 
 ### role test ADMIN
 GET {{domain}}/api/auth/roleTest
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJhZG1pbkBhZG1pbi5jb20iLCJuaWNrbmFtZSI6InRlc3QyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjgwNjg5ODk4LCJleHAiOjE2ODA3NzYyOTh9.0RgGsbkmNTjVwf7Nq0oLYOQSgoLEq6wNymaF6Agugrg
-
-### mail test
-GET {{domain}}/api/auth/mailTest
-Authorization: Bearer {{token}}

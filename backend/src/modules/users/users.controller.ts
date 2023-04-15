@@ -27,7 +27,7 @@ export class UsersController {
   @Public()
   @Get('exists')
   async isEmailTaken(@Query() existsEmailDto: ExistsEmailDto) {
-    return await this.usersService.isEmailTaken(existsEmailDto.email);
+    return await this.usersService.isEmailExists(existsEmailDto.email);
   }
 
   @Delete(':id')

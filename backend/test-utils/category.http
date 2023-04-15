@@ -1,5 +1,5 @@
 POST {{domain}}/api/categories
-Authorization: Bearer {{token}}
+Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {

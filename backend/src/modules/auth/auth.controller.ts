@@ -8,12 +8,11 @@ import {
   HttpCode,
   Param,
   Redirect,
-  ParseUUIDPipe
+  ParseUUIDPipe, Query
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { CreateUserDto } from "../users/dtos/create-user.dto";
 import { LoginUserDto } from "./dtos/login-user.dto";
-import { JwtAuthGuard } from "./guards/jwt-auth.guard";
 import { LocalAuthGuard } from "./guards/local-auth.guard";
 import { SignupResponseDto } from "./dtos/signup-response.dto";
 import { Serialize } from "../../common/interceptors/serialize.interceptor";
@@ -22,12 +21,12 @@ import { CurrentUser } from "../../common/decorators/current-user.decorator";
 import { Roles } from "../../common/decorators/roles.decorator";
 import { UserRole } from "../users/entities/user-role.enum";
 import { Public } from "../../common/decorators/public.decorator";
-import { EmailVerificationService } from "./email-verification.service";
+import { RefreshTokenDto } from "./dtos/refresh-token.dto";
+import { VerifyEmailDto } from "./dtos/verify-email.dto";
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService,
-              private readonly emailVerificationService: EmailVerificationService) {}
+  constructor(private readonly authService: AuthService) {}
 
   @Public()
   @Post('login')
@@ -44,15 +43,22 @@ export class AuthController {
     return await this.authService.signup(body);
   }
 
-  @Get(':email/emailAuth/:code')
-  async emailAuth(@Param('email') email: string, @Param('code') code: string) {
-    return 'success';
+  @Public()
+  @Post('refresh')
+  async refresh(@Body() body: RefreshTokenDto) {
+    return await this.authService.refresh(body);
   }
 
-  @Get('email-verify/:token')
-  @Redirect('/')
-  async verifyEmail(@Param('token', ParseUUIDPipe) token: string) {
-    await this.emailVerificationService.verifyEmail(token);
+  @Public()
+  @Get('verify-email')
+  @Redirect('http://localhost:3000')
+  async verifyEmail(@Query() query: VerifyEmailDto) {
+    return await this.authService.verifyEmail(query);
+  }
+
+  @Get('send-email-verification')
+  async resendEmailVerification(@CurrentUser() currentUser: CurrentUserDto) {
+    return await this.authService.sendEmailVerification(currentUser);
   }
 
   @Get('jwtTest')

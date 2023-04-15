@@ -12,7 +12,7 @@ import { Post } from "../../posts/entities/post.entity";
 import { Comment } from "../../comments/entities/comment.entity";
 import { PostLike } from "../../posts/entities/post-like.entity";
 import { CommentLike } from "../../comments/entities/comment-like.entity";
-import { EmailVerification } from "../../auth/entities/email-verification.entity";
+import { AuthUser } from "./auth-user.entity";
 
 @Entity()
 export class User {
@@ -37,8 +37,8 @@ export class User {
   })
   role: string;
 
-  @OneToOne(() => EmailVerification, (emailVerification) => emailVerification.user)
-  emailVerification: EmailVerification;
+  @OneToOne(() => AuthUser, (authUser) => authUser.user)
+  authUser: AuthUser;
 
   @OneToMany(type => Post, (post) => post.user)
   posts: Post[];

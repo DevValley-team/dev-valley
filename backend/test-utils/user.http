@@ -1,3 +1,3 @@
 ### 나의 정보 조회
 GET {{domain}}/api/users/me
-Authorization: Bearer {{token}}
+Authorization: Bearer {{accessToken}}
