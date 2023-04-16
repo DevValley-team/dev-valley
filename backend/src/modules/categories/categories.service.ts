@@ -12,11 +12,10 @@ export class CategoriesService {
   async create(createCategoryDto: CreateCategoryDto) {
     const category = this.categoryRepository.create(createCategoryDto);
 
-    const categoryExists = await this.categoryRepository.findOne({ where: { name: category.name } });
-    if (categoryExists) throw new BadRequestException('Category already exists');
+    const isCategoryExists = await this.categoryRepository.findOne({ where: { name: category.name } });
+    if (isCategoryExists) throw new BadRequestException('카테고리가 이미 존재합니다.');
 
-    const result = await this.categoryRepository.insert(category);
-    return result.generatedMaps[0].id;
+    return  await this.categoryRepository.save(category);
   }
 
   async findAll() {
@@ -26,7 +25,7 @@ export class CategoriesService {
   async findOneById(id: number) {
     const category = await this.categoryRepository.findOne({ where: { id } });
 
-    if (!category) throw new BadRequestException('Category not found');
+    if (!category) throw new BadRequestException('카테고리를 찾을 수 없습니다.');
 
     return category;
   }
@@ -34,13 +33,16 @@ export class CategoriesService {
   async findOneByName(name: string) {
     const category = await this.categoryRepository.findOne({ where: { name } });
 
-    if (!category) throw new BadRequestException('Category not found');
+    if (!category) throw new BadRequestException('카테고리를 찾을 수 없습니다.');
 
     return category;
   }
 
-  async update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return await this.categoryRepository.update(id, updateCategoryDto);
+  async update(id: number, attrs: Partial<Category>) {
+    const comment = await this.categoryRepository.findOne({ where: { id } });
+
+    const updatedComment = Object.assign(comment, attrs);
+    return await this.categoryRepository.save(updatedComment);
   }
 
   async remove(id: number) {

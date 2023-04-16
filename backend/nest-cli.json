@@ -5,7 +5,6 @@
   "compilerOptions": {
     "assets": ["**/*.hbs"],
     "watchAssets": true,
-    "deleteOutDir": true,
-    "plugins": ["@nestjs/swagger"]
+    "deleteOutDir": true
   }
 }

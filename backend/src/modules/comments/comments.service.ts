@@ -8,6 +8,8 @@ import { PostsService } from "../posts/posts.service";
 import { CommentLike } from "./entities/comment-like.entity";
 import { Comment } from "./entities/comment.entity";
 import { GetCommentsDto } from "./dtos/get-comments.dto";
+import { PageDto } from "../../common/dtos/page.dto";
+import { CommentResponseDto } from "./dtos/response/comment-response.dto";
 
 @Injectable()
 export class CommentsService {
@@ -16,7 +18,13 @@ export class CommentsService {
               private readonly usersService: UsersService,
               private readonly postsService: PostsService) {}
 
-  async create(createCommentDto: CreateCommentDto, currentUser: CurrentUserDto): Promise<Comment> {
+  async createComment(createCommentDto: CreateCommentDto, currentUser: CurrentUserDto) {
+    const { postId } = createCommentDto;
+
+    const post = await this.postsService.findOneById(postId);
+
+    if (!post) throw new NotFoundException('게시글이 존재하지 않습니다.');
+
     const comment = this.commentRepository.create(createCommentDto);
     comment.content = createCommentDto.content;
     comment.postId = createCommentDto.postId;
@@ -25,7 +33,7 @@ export class CommentsService {
     if (createCommentDto.parentId) {
       const parentComment = await this.commentRepository.findOne({ where: { id: createCommentDto.parentId } });
 
-      if (!parentComment) throw new NotFoundException('Parent comment not found');
+      if (!parentComment) throw new NotFoundException('댓글이 존재하지 않습니다.');
 
       comment.parent = parentComment;
     }
@@ -33,7 +41,7 @@ export class CommentsService {
     return await this.commentRepository.save(comment);
   }
 
-  async getComments(getCommentsDto: GetCommentsDto): Promise<Comment[]> {
+  async getComments(getCommentsDto: GetCommentsDto): Promise<PageDto<CommentResponseDto>> {
     const { page, limit, postId } = getCommentsDto;
     const offset = (page - 1) * limit;
 
@@ -48,23 +56,23 @@ export class CommentsService {
       .take(limit)
       .getManyAndCount();
 
-    return comments;
+    const response = comments.map(comment => new CommentResponseDto(comment));
+    return new PageDto(response, page, limit, totalComments);
   }
 
-  async update(id: number, attrs: Partial<Comment>, currentUser: CurrentUserDto): Promise<boolean> {
-    const comment = await this.commentRepository.createQueryBuilder('comment')
-      .select(['comment.id', 'user.id'])
-      .innerJoin('comment.user', 'user')
-      .where('comment.id = :id', { id })
-      .getOne();
+  async updateComment(id: number, attrs: Partial<Comment>, currentUser: CurrentUserDto) {
+    const { postId } = attrs;
 
-    if (!comment) throw new NotFoundException('Comment not found');
+    const post = await this.postsService.findOneById(postId);
 
-    if (currentUser.id !== comment.user.id) throw new NotFoundException('You are not allowed to update this comment.');
+    if (!post) throw new NotFoundException('게시글이 존재하지 않습니다.');
+
+    const comment = await this.commentRepository.findOne({ where: { id, userId: currentUser.id } });
+
+    if (!comment) throw new NotFoundException('댓글이 존재하지 않습니다.');
 
     const updatedComment = Object.assign(comment, attrs);
-    const result = await this.commentRepository.save(updatedComment);
-    return !!result;
+    return await this.commentRepository.save(updatedComment);
   }
 
 }

@@ -17,8 +17,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('🏔️ 개발자의 협곡 🏔️')
     .setDescription('📒 개발자의 협곡 API 문서입니다.')
-    .setVersion('1.0')
-    .addTag('개발자의 협곡')
+    .setVersion('1.0.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-document', app, document);

@@ -2,12 +2,13 @@ import { CallHandler, ExecutionContext, NestInterceptor, UseInterceptors } from 
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { plainToInstance } from "class-transformer";
+import { ApiResponse } from "@nestjs/swagger";
 
 interface ClassConstructor<T> {
   new (...args: any[]): T;
 }
 
-export function SerializeAndIsAuthor<T>(dto: ClassConstructor<T>) {
+export function SerializeAndSetIsAuthor<T>(dto: ClassConstructor<T>) {
   return UseInterceptors(new SerializeInterceptor<T>(dto));
 }
 

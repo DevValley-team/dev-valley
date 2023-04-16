@@ -15,6 +15,7 @@ import { EmailService } from "../../infrastructure/email/email.service";
 import { v4 as uuidv4 } from 'uuid';
 import { UserRole } from "../users/entities/user-role.enum";
 import { VerifyEmailDto } from "./dtos/verify-email.dto";
+import { TokenResponseDto } from "./dtos/response/token-response.dto";
 
 @Injectable()
 export class AuthService {
@@ -51,12 +52,13 @@ export class AuthService {
 
     const newUser = await this.usersService.create(createUserDto);
 
-    await this.sendEmailVerification(newUser);
+    // TODO: 개발기간에는 이메일 인증을 생략
+    // await this.sendEmailVerification(newUser);
 
     return newUser;
   }
 
-  async login(user: User) {
+  async login(user: User): Promise<TokenResponseDto> {
     const payload: CurrentUserDto = {
       id: user.id,
       email: user.email,
@@ -67,10 +69,10 @@ export class AuthService {
     const accessToken = this.jwtService.sign(payload);
     const refreshToken = await this.generateRefreshToken(payload);
 
-    return { accessToken, refreshToken };
+    return new TokenResponseDto(accessToken, refreshToken);
   }
 
-  async refresh(refreshTokenDto: RefreshTokenDto) {
+  async refresh(refreshTokenDto: RefreshTokenDto): Promise<TokenResponseDto> {
     const { refreshToken } = refreshTokenDto;
 
     let decoded;
@@ -82,13 +84,11 @@ export class AuthService {
       throw new UnauthorizedException('Please login to continue.');
     }
 
-
     const authUser = await this.authUserRepository.findOne({ where: { userId: decoded.id } });
 
     if (authUser.refreshToken !== refreshToken) {
       throw new UnauthorizedException('Please login to continue.');
     }
-
 
     const payload: CurrentUserDto = {
       id: decoded.id,
@@ -100,7 +100,7 @@ export class AuthService {
     const accessToken = this.jwtService.sign(payload);
     const newRefreshToken = await this.generateRefreshToken(payload);
 
-    return { accessToken, refreshToken: newRefreshToken };
+    return new TokenResponseDto(accessToken, newRefreshToken);
   }
 
   async verifyEmail(verifyEmailDto: VerifyEmailDto) {

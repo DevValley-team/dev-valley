@@ -8,8 +8,8 @@ import { UpdatePostDto } from "./dtos/update-post.dto";
 import { CategoriesService } from "../categories/categories.service";
 import { GetPostsDto } from "./dtos/get-posts.dto";
 import { CurrentUserDto } from "../../common/dtos/current-user.dto";
-import { PostListResponseDto } from "./dtos/responses/post-list-response.dto";
-import { PostDetailsResponseDto } from "./dtos/responses/post-details-response.dto";
+import { PostSummaryResponseDto } from "./dtos/response/post-summary-response.dto";
+import { PageDto } from "../../common/dtos/page.dto";
 
 @Injectable()
 export class PostsService {
@@ -17,7 +17,7 @@ export class PostsService {
               private readonly categoriesService: CategoriesService,
               private readonly usersService: UsersService) {}
 
-  async create(createPostDto: CreatePostDto, currentUser: CurrentUserDto): Promise<Post> {
+  async createPost(createPostDto: CreatePostDto, currentUser: CurrentUserDto) {
     const { categoryId } = createPostDto;
     const category = await this.categoriesService.findOneById(categoryId);
 
@@ -33,41 +33,39 @@ export class PostsService {
   async findOneById(id: number): Promise<Post> {
     const post = await this.postRepository.findOne({ where: { id } });
 
-    if (!post) throw new NotFoundException('Post not found');
+    if (!post) throw new NotFoundException('게시글을 찾을 수 없습니다.');
 
     return post;
   }
 
-  async update(id: number, updatePostDto: UpdatePostDto, currentUser: CurrentUserDto): Promise<boolean> {
+  async updatePost(id: number, updatePostDto: UpdatePostDto, currentUser: CurrentUserDto) {
     const post = await this.postRepository.findOne({
       where: { id },
       relations: ['user']
     });
 
-    if (!post) throw new NotFoundException('Post not found.');
+    if (!post) throw new NotFoundException('게시글을 찾을 수 없습니다.');
 
-    if (currentUser.id !== post.user.id) throw new UnauthorizedException('You are not allowed to update this post.');
+    if (currentUser.id !== post.user.id) throw new UnauthorizedException('접근권한이 없습니다.');
 
     const updatedPost = Object.assign(post, updatePostDto);
-    const result = await this.postRepository.save(updatedPost);
-    return !!result;
+    return await this.postRepository.save(updatedPost);
   }
 
-  async softRemove(id: number, currentUser: CurrentUserDto): Promise<boolean> {
+  async softRemovePost(id: number, currentUser: CurrentUserDto) {
     const post = await this.postRepository.findOne({
       where: { id },
       relations: ['user']
     });
 
-    if (!post) throw new NotFoundException('Post not found.');
+    if (!post) throw new NotFoundException('게시글을 찾을 수 없습니다.');
 
-    if (currentUser.id !== post.user.id) throw new UnauthorizedException('You are not allowed to update this post.');
+    if (currentUser.id !== post.user.id) throw new UnauthorizedException('접근권한이 없습니다.');
 
-    const result = await this.postRepository.softRemove(post);
-    return !!result;
+    return !!await this.postRepository.softRemove(post);
   }
 
-  async getPosts(getPostsDto: GetPostsDto): Promise<PostListResponseDto> {
+  async getPostsByCategory(getPostsDto: GetPostsDto): Promise<PageDto<PostSummaryResponseDto>> {
     const { categoryId, page, limit } = getPostsDto;
     const offset = (page - 1) * limit;
 
@@ -79,7 +77,8 @@ export class PostsService {
       .take(limit)
       .getManyAndCount();
 
-    return new PostListResponseDto(posts, page, limit, totalPosts);
+    const response = posts.map(post => new PostSummaryResponseDto(post));
+    return new PageDto(response, page, limit, totalPosts);
   }
 
   async getPostDetails(id: number): Promise<Post> {
@@ -88,7 +87,7 @@ export class PostsService {
       relations: ['user', 'category']
     });
 
-    if (!post) throw new NotFoundException('Post not found');
+    if (!post) throw new NotFoundException('게시글을 찾을 수 없습니다.');
 
     // TODO: 조회수 기능 추가
 
