@@ -22,7 +22,7 @@ export class CategoriesService {
     return await this.categoryRepository.find();
   }
 
-  async findOneById(id: number) {
+  async findOneByIdOrThrow(id: number) {
     const category = await this.categoryRepository.findOne({ where: { id } });
 
     if (!category) throw new BadRequestException('카테고리를 찾을 수 없습니다.');
@@ -30,7 +30,7 @@ export class CategoriesService {
     return category;
   }
 
-  async findOneByName(name: string) {
+  async findOneByNameOrThrow(name: string) {
     const category = await this.categoryRepository.findOne({ where: { name } });
 
     if (!category) throw new BadRequestException('카테고리를 찾을 수 없습니다.');

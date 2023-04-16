@@ -26,7 +26,7 @@ export class AuthService {
               private readonly configService: ConfigService) {}
 
   async validateUser(email: string, password: string) {
-    const user = await this.usersService.findOneByEmail(email);
+    const user = await this.usersService.findOneByEmailOrThrow(email);
 
     if (!user) throw new NotFoundException('유저를 찾을 수 없습니다.');
 

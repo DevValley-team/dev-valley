@@ -25,7 +25,7 @@ export class UsersController {
   @Get('me')
   @Serialize(UserResponseDto)
   me(@CurrentUser() currentUser: CurrentUserDto) {
-    return this.usersService.findOneById(currentUser.id);
+    return this.usersService.findOneByIdOrThrow(currentUser.id);
   }
 
   @ApiOperation({ summary: '이메일 중복 확인' })

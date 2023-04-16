@@ -19,9 +19,9 @@ export class PostsService {
 
   async createPost(createPostDto: CreatePostDto, currentUser: CurrentUserDto) {
     const { categoryId } = createPostDto;
-    const category = await this.categoriesService.findOneById(categoryId);
+    const category = await this.categoriesService.findOneByIdOrThrow(categoryId);
 
-    const user = await this.usersService.findOneById(currentUser.id);
+    const user = await this.usersService.findOneByIdOrThrow(currentUser.id);
 
     const post = await this.postRepository.create(createPostDto);
     post.category = category;
@@ -30,7 +30,7 @@ export class PostsService {
     return await this.postRepository.save(post);
   }
 
-  async findOneById(id: number): Promise<Post> {
+  async findOneByIdOrThrow(id: number): Promise<Post> {
     const post = await this.postRepository.findOne({ where: { id } });
 
     if (!post) throw new NotFoundException('게시글을 찾을 수 없습니다.');

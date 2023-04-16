@@ -21,7 +21,7 @@ export class CommentsService {
   async createComment(createCommentDto: CreateCommentDto, currentUser: CurrentUserDto) {
     const { postId } = createCommentDto;
 
-    const post = await this.postsService.findOneById(postId);
+    const post = await this.postsService.findOneByIdOrThrow(postId);
 
     if (!post) throw new NotFoundException('게시글이 존재하지 않습니다.');
 
@@ -63,7 +63,7 @@ export class CommentsService {
   async updateComment(id: number, attrs: Partial<Comment>, currentUser: CurrentUserDto) {
     const { postId } = attrs;
 
-    const post = await this.postsService.findOneById(postId);
+    const post = await this.postsService.findOneByIdOrThrow(postId);
 
     if (!post) throw new NotFoundException('게시글이 존재하지 않습니다.');
 
