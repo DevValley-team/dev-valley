@@ -14,13 +14,7 @@ export class UsersService {
 
   async create(dto: CreateUserDto): Promise<User> {
     const user = this.userRepository.create(dto);
-
-    // TODO: admin 인증 로직 강화
-    if (dto.isAdmin) {
-      user.role = UserRole.ADMIN;
-    } else {
-      user.role = UserRole.GUEST;
-    }
+    user.role = UserRole.GUEST;
 
     return await this.userRepository.manager.transaction(async (entityManager: EntityManager) => {
       const savedUser = await entityManager.save(user);
