@@ -37,6 +37,18 @@ export default function TopNavDrawer({ isOpen, isClose }: IModalProp) {
     router.push("/register");
   }
 
+  function communityOnClick() {
+    setModalIsOpen(false);
+    isClose(false);
+    router.push("/community");
+  }
+
+  function homeOnClick() {
+    setModalIsOpen(false);
+    isClose(false);
+    router.push("/");
+  }
+
   return (
     <Modal
       ariaHideApp={false}
@@ -58,13 +70,13 @@ export default function TopNavDrawer({ isOpen, isClose }: IModalProp) {
     >
       <ModalContainer>
         <TitleContainer>
-          <Title>DevValley</Title>
+          <Title onClick={homeOnClick}>DevValley</Title>
           <CloseBtn onClick={closeModal}>✕</CloseBtn>
         </TitleContainer>
         <ContentContainer>
           <ContentItem>프로필</ContentItem>
           <ContentItem>공지사항</ContentItem>
-          <ContentItem>자유게시판</ContentItem>
+          <ContentItem onClick={communityOnClick}>자유게시판</ContentItem>
           <ContentItem>질문게시판</ContentItem>
         </ContentContainer>
         <UserContainer>
@@ -82,6 +94,7 @@ const Title = styled.span`
   color: ${(props) => props.theme.textColor};
   font-weight: bold;
   font-size: 1.8rem;
+  cursor: pointer;
 `;
 
 const TitleContainer = styled.div`
