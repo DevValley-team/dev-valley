@@ -33,3 +33,11 @@ Content-Type: application/json
 ### 게시글 삭제
 DELETE {{domain}}/api/posts/3
 Authorization: Bearer {{accessToken}}
+
+### 좋아요
+POST {{domain}}/api/posts/2/like
+Authorization: Bearer {{accessToken}}
+
+### 좋아요 취소
+DELETE {{domain}}/api/posts/2/like
+Authorization: Bearer {{accessToken}}

@@ -77,4 +77,16 @@ export class PostsController {
     return await this.postsService.getPostDetails(id);
   }
 
+  @Post(':id/like')
+  async likePost(@Param('id', ParseIntPipe) id: number,
+                 @CurrentUser() currentUser: CurrentUserDto) {
+    return await this.postsService.likePost(id, currentUser);
+  }
+
+  @Delete(':id/like')
+  async unlikePost(@Param('id', ParseIntPipe) id: number,
+                   @CurrentUser() currentUser: CurrentUserDto) {
+    return await this.postsService.unlikePost(id, currentUser);
+  }
+
 }
