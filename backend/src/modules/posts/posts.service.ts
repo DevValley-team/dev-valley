@@ -100,7 +100,11 @@ export class PostsService {
 
     if (!post) throw new NotFoundException('게시글을 찾을 수 없습니다.');
 
-    // TODO: 조회수 기능 추가
+    post.viewCount += 1;
+    await this.postRepository.save(post);
+
+    return post;
+  }
 
     return post
   }
