@@ -35,7 +35,6 @@ export class PostsController {
   @ApiResponse({ status: HttpStatus.CREATED, type: CreatePostResponseDto })
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @Serialize(CreatePostResponseDto)
   async create(@Body() createPostDto: CreatePostDto,
                @CurrentUser() currentUser: CurrentUserDto) {
     return await this.postsService.create(createPostDto, currentUser);

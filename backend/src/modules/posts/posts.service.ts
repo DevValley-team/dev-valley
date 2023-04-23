@@ -36,7 +36,8 @@ export class PostsService {
     post.category = category;
     post.user = user;
 
-    return await this.postRepository.save(post);
+    const savedPost = await this.postRepository.save(post);
+    return plainToInstance(CreatePostResponseDto, savedPost, { strategy: 'excludeAll' });
   }
 
   async update(id: number, updatePostDto: UpdatePostDto, currentUser: CurrentUserDto) {
