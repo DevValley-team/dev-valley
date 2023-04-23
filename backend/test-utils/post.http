@@ -25,7 +25,7 @@ Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "title": "하ㄴㄴ하",
+  "title": "안녕하세요",
   "content": "하",
   "categoryId": 1
 }

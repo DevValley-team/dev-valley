@@ -18,12 +18,12 @@ export class CommentsService {
               private readonly usersService: UsersService,
               private readonly postsService: PostsService) {}
 
-  async createComment(createCommentDto: CreateCommentDto, currentUser: CurrentUserDto) {
+  async create(createCommentDto: CreateCommentDto, currentUser: CurrentUserDto) {
     const { postId } = createCommentDto;
 
     const post = await this.postsService.findOneByIdOrThrow(postId);
 
-    if (!post) throw new NotFoundException('게시글이 존재하지 않습니다.');
+    // TODO: 유저 체크
 
     const comment = this.commentRepository.create(createCommentDto);
     comment.content = createCommentDto.content;
@@ -39,6 +39,20 @@ export class CommentsService {
     }
 
     return await this.commentRepository.save(comment);
+  }
+
+  // TODO: DTO로 받아서 처리
+  async update(id: number, attrs: Partial<Comment>, currentUser: CurrentUserDto) {
+    const { postId } = attrs;
+
+    const post = await this.postsService.findOneByIdOrThrow(postId);
+
+    const comment = await this.commentRepository.findOne({ where: { id, userId: currentUser.id } });
+
+    if (!comment) throw new NotFoundException('댓글이 존재하지 않습니다.');
+
+    const updatedComment = Object.assign(comment, attrs);
+    return await this.commentRepository.save(updatedComment);
   }
 
   async getComments(getCommentsDto: GetCommentsDto): Promise<PageDto<CommentResponseDto>> {
@@ -58,21 +72,6 @@ export class CommentsService {
 
     const response = comments.map(comment => new CommentResponseDto(comment));
     return new PageDto(response, page, limit, totalComments);
-  }
-
-  async updateComment(id: number, attrs: Partial<Comment>, currentUser: CurrentUserDto) {
-    const { postId } = attrs;
-
-    const post = await this.postsService.findOneByIdOrThrow(postId);
-
-    if (!post) throw new NotFoundException('게시글이 존재하지 않습니다.');
-
-    const comment = await this.commentRepository.findOne({ where: { id, userId: currentUser.id } });
-
-    if (!comment) throw new NotFoundException('댓글이 존재하지 않습니다.');
-
-    const updatedComment = Object.assign(comment, attrs);
-    return await this.commentRepository.save(updatedComment);
   }
 
 }

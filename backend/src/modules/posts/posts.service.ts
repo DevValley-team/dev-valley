@@ -1,4 +1,10 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+  UnauthorizedException
+} from '@nestjs/common';
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Post } from "./entities/post.entity";
@@ -10,6 +16,9 @@ import { GetPostsDto } from "./dtos/get-posts.dto";
 import { CurrentUserDto } from "../../common/dtos/current-user.dto";
 import { PostSummaryResponseDto } from "./dtos/response/post-summary-response.dto";
 import { PageDto } from "../../common/dtos/page.dto";
+import { CreatePostResponseDto } from "./dtos/response/create-post-response.dto";
+import { Serialize } from "../../common/interceptors/serialize.interceptor";
+import { plainToInstance } from "class-transformer";
 
 @Injectable()
 export class PostsService {
@@ -17,7 +26,7 @@ export class PostsService {
               private readonly categoriesService: CategoriesService,
               private readonly usersService: UsersService) {}
 
-  async createPost(createPostDto: CreatePostDto, currentUser: CurrentUserDto) {
+  async create(createPostDto: CreatePostDto, currentUser: CurrentUserDto): Promise<CreatePostResponseDto> {
     const { categoryId } = createPostDto;
     const category = await this.categoriesService.findOneByIdOrThrow(categoryId);
 
@@ -30,39 +39,40 @@ export class PostsService {
     return await this.postRepository.save(post);
   }
 
+  async update(id: number, updatePostDto: UpdatePostDto, currentUser: CurrentUserDto) {
+    const post = await this.postRepository.findOne({
+      where: { id },
+      relations: ['user']
+    });
+
+    if (!post) throw new NotFoundException('게시글을 찾을 수 없습니다.');
+
+    if (currentUser.id !== post.user.id) throw new ForbiddenException('접근권한이 없습니다.');
+
+    const updatedPost = Object.assign(post, updatePostDto);
+    return await this.postRepository.save(updatedPost);
+  }
+
+  async softRemove(id: number, currentUser: CurrentUserDto) {
+    const post = await this.postRepository.findOne({
+      where: { id },
+      relations: ['user']
+    });
+
+    if (!post) throw new NotFoundException('게시글을 찾을 수 없습니다.');
+
+    if (currentUser.id !== post.user.id) throw new ForbiddenException('접근권한이 없습니다.');
+
+    await this.postRepository.softRemove(post)
+      .catch(err => { throw new Error(err) });
+  }
+
   async findOneByIdOrThrow(id: number): Promise<Post> {
     const post = await this.postRepository.findOne({ where: { id } });
 
     if (!post) throw new NotFoundException('게시글을 찾을 수 없습니다.');
 
     return post;
-  }
-
-  async updatePost(id: number, updatePostDto: UpdatePostDto, currentUser: CurrentUserDto) {
-    const post = await this.postRepository.findOne({
-      where: { id },
-      relations: ['user']
-    });
-
-    if (!post) throw new NotFoundException('게시글을 찾을 수 없습니다.');
-
-    if (currentUser.id !== post.user.id) throw new UnauthorizedException('접근권한이 없습니다.');
-
-    const updatedPost = Object.assign(post, updatePostDto);
-    return await this.postRepository.save(updatedPost);
-  }
-
-  async softRemovePost(id: number, currentUser: CurrentUserDto) {
-    const post = await this.postRepository.findOne({
-      where: { id },
-      relations: ['user']
-    });
-
-    if (!post) throw new NotFoundException('게시글을 찾을 수 없습니다.');
-
-    if (currentUser.id !== post.user.id) throw new UnauthorizedException('접근권한이 없습니다.');
-
-    return !!await this.postRepository.softRemove(post);
   }
 
   async getPostsByCategory(getPostsDto: GetPostsDto): Promise<PageDto<PostSummaryResponseDto>> {

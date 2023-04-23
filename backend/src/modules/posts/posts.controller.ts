@@ -38,7 +38,7 @@ export class PostsController {
   @Serialize(CreatePostResponseDto)
   async create(@Body() createPostDto: CreatePostDto,
                @CurrentUser() currentUser: CurrentUserDto) {
-    return await this.postsService.createPost(createPostDto, currentUser);
+    return await this.postsService.create(createPostDto, currentUser);
   }
 
   @ApiOperation({ summary: '게시글 수정' })
@@ -48,7 +48,7 @@ export class PostsController {
   async update(@Param('id', ParseIntPipe) id: number,
                @Body() updatePostDto: UpdatePostDto,
                @CurrentUser() currentUser: CurrentUserDto) {
-    return await this.postsService.updatePost(id, updatePostDto, currentUser);
+    return await this.postsService.update(id, updatePostDto, currentUser);
   }
 
   @ApiOperation({ summary: '게시글 삭제' })
@@ -57,7 +57,7 @@ export class PostsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id', ParseIntPipe) id: number,
                @CurrentUser() currentUser: CurrentUserDto) {
-    await this.postsService.softRemovePost(id, currentUser);
+    await this.postsService.softRemove(id, currentUser);
   }
 
   @ApiOperation({ summary: '카테고리별 게시글 목록 조회' })

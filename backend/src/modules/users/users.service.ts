@@ -24,27 +24,11 @@ export class UsersService {
     });
   }
 
-  async findOneByIdOrThrow(id: number): Promise<User> {
-    const user = await this.userRepository.findOne({ where: {id} });
-
-    if (!user) throw new NotFoundException('유저를 찾을 수 없습니다.');
-
-    return user;
-  }
-
-  async findOneByEmailOrThrow(email: string): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { email } });
-
-    if (!user) throw new NotFoundException('유저를 찾을 수 없습니다.');
-
-    return user;
-  }
-
   async update(id: number, attrs: Partial<User>): Promise<User> {
     const user = await this.findOneByIdOrThrow(id);
 
-    Object.assign(user, attrs);
-    return this.userRepository.save(user);
+    const updatedUser = Object.assign(user, attrs);
+    return this.userRepository.save(updatedUser);
   }
 
   async updateLastLogInAt(user: User): Promise<void> {
@@ -59,18 +43,34 @@ export class UsersService {
   }
 
   async remove(id: number, currentUser: CurrentUserDto) {
-    if (currentUser.id !== id) throw new ForbiddenException('You do not have permission to do this.');
+    if (currentUser.id !== id) throw new ForbiddenException('접근권한이 없습니다.');
 
     const user = await this.findOneByIdOrThrow(id);
 
     const result = await this.userRepository.softRemove(user);
   }
 
+  async findOneByIdOrThrow(id: number): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { id } });
+
+    if (!user) throw new NotFoundException('유저를 찾을 수 없습니다.');
+
+    return user;
+  }
+
+  async findOneByEmailOrThrow(email: string): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { email } });
+
+    if (!user) throw new NotFoundException('유저를 찾을 수 없습니다.');
+
+    return user;
+  }
+
   async isEmailExists(email: string): Promise<boolean> {
-    return !!await this.userRepository.findOne({ where: { email } });
+    return 0 < await this.userRepository.count({ where: { email } });
   }
 
   async isNicknameExists(nickname: string): Promise<boolean> {
-    return !!await this.userRepository.findOne({ where: { nickname } });
+    return 0 < await this.userRepository.count({ where: { nickname } });
   }
 }

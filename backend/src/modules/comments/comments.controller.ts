@@ -38,7 +38,7 @@ export class CommentsController {
   @Serialize(CreateCommentResponseDto)
   async create(@Body() createCommentDto: CreateCommentDto,
                @CurrentUser() currentUser: CurrentUserDto) {
-    return await this.commentsService.createComment(createCommentDto, currentUser);
+    return await this.commentsService.create(createCommentDto, currentUser);
   }
 
   @ApiOperation({ summary: '댓글 수정' })
@@ -48,7 +48,7 @@ export class CommentsController {
   async update(@Param('id', ParseIntPipe) id: number,
                @Body() updateCommentDto: UpdateCommentDto,
                @CurrentUser() currentUser: CurrentUserDto) {
-    return await this.commentsService.updateComment(id, updateCommentDto, currentUser);
+    return await this.commentsService.update(id, updateCommentDto, currentUser);
   }
 
   @ApiOperation({ summary: '댓글 삭제 (내용만 수정함)' })
@@ -58,7 +58,7 @@ export class CommentsController {
   async remove(@Param('id', ParseIntPipe) id: number,
                @CurrentUser() currentUser: CurrentUserDto) {
     const removeCommentDto = new RemoveCommentDto();
-    await this.commentsService.updateComment(id, removeCommentDto, currentUser);
+    await this.commentsService.update(id, removeCommentDto, currentUser);
   }
 
   @ApiOperation({ summary: '댓글 조회' })

@@ -17,6 +17,7 @@ import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Serialize } from "../../common/interceptors/serialize.interceptor";
 import { Public } from "../../common/decorators/public.decorator";
 import { CategoryResponseDto } from "./dtos/response/category-response.dto";
+import { PostDetailsResponseDto } from "../posts/dtos/response/post-details-response.dto";
 
 @ApiTags('카테고리')
 @Controller('categories')
@@ -33,9 +34,10 @@ export class CategoriesController {
   }
 
   @ApiOperation({ summary: '카테고리 수정' })
+  @ApiResponse({ status: HttpStatus.OK })
   @Patch(':id')
   async update(@Param('id', ParseIntPipe) id: number,
-         @Body() updateCategoryDto: UpdateCategoryDto) {
+               @Body() updateCategoryDto: UpdateCategoryDto) {
     return await this.categoriesService.update(id, updateCategoryDto);
   }
 
