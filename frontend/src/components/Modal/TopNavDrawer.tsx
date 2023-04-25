@@ -4,6 +4,9 @@ import { darkTheme } from "@/styles/theme";
 import styled, { keyframes } from "styled-components";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useRecoilState } from "recoil";
+import { authState } from "@/recoil";
+import axios from "axios";
 
 interface IModalProp {
   isOpen: boolean;
@@ -12,6 +15,7 @@ interface IModalProp {
 
 export default function TopNavDrawer({ isOpen, isClose }: IModalProp) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [isLogin, setIsLogin] = useRecoilState(authState);
   const router = useRouter();
 
   useEffect(() => {
@@ -49,6 +53,11 @@ export default function TopNavDrawer({ isOpen, isClose }: IModalProp) {
     router.push("/");
   }
 
+  async function logoutOnClick() {
+    await axios.get("/api/auth/logout");
+    location.reload();
+  }
+
   return (
     <Modal
       ariaHideApp={false}
@@ -80,8 +89,14 @@ export default function TopNavDrawer({ isOpen, isClose }: IModalProp) {
           <ContentItem>질문게시판</ContentItem>
         </ContentContainer>
         <UserContainer>
-          <UserItem onClick={loginOnClick}>로그인</UserItem>
-          <UserItem onClick={registerOnClick}>회원가입</UserItem>
+          {isLogin ? (
+            <UserItem onClick={logoutOnClick}>로그아웃</UserItem>
+          ) : (
+            <>
+              <UserItem onClick={loginOnClick}>로그인</UserItem>
+              <UserItem onClick={registerOnClick}>회원가입</UserItem>
+            </>
+          )}
         </UserContainer>
       </ModalContainer>
     </Modal>
