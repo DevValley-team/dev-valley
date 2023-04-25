@@ -1,68 +1,69 @@
-import Router from "next/router";
-import { FormEvent, useState } from "react";
+import { authState } from "@/recoil";
+import axios from "axios";
+import Router, { useRouter } from "next/router";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useRecoilState } from "recoil";
 import styled from "styled-components";
-
 interface ILoginData {
   email: string;
   password: string;
 }
 
 export default function LoginForm() {
-  const [formData, setFormData] = useState<ILoginData>({
-    email: "",
-    password: "",
-  });
+  const router = useRouter();
+  const [accessToken, setAccessToken] = useRecoilState(authState);
+  const [loginFailed, setLoginFailed] = useState("");
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: value,
-    }));
-  };
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm<ILoginData>();
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const onVaild = async (data: ILoginData) => {
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const res = await axios.post(
+        "/api/auth/login",
+        {
+          email: data.email,
+          password: data.password,
         },
-        body: JSON.stringify(formData),
-      });
-      if (res.ok) {
-        Router.push("/");
-      } else {
-        const { message } = await res.json();
-        throw new Error(message);
+        { withCredentials: true }
+      );
+      if (res.status === 200) {
+        setAccessToken(res.data.accessToken);
+        router.push("/", undefined, { shallow: true });
       }
-    } catch (error) {
-      console.error(error);
+    } catch (e) {
+      setLoginFailed("아이디, 비밀번호를 확인해주세요.");
     }
   };
 
   return (
-    <LoginFormContainer onSubmit={handleSubmit}>
-      <LoginLabel>이메일</LoginLabel>
+    <LoginFormContainer onSubmit={handleSubmit(onVaild)}>
+      <LoginLabel>
+        이메일 <ErrMsg>{errors?.email?.message}</ErrMsg>
+      </LoginLabel>
       <Input
-        value={formData.email}
-        name="email"
+        {...register("email", {
+          required: "* 입력",
+        })}
         type="email"
-        placeholder="user@naver.com"
-        onChange={handleChange}
       />
-      <LoginLabel>비밀번호</LoginLabel>
+      <LoginLabel>
+        비밀번호 <ErrMsg>{errors?.password?.message}</ErrMsg>
+      </LoginLabel>
       <Input
-        value={formData.password}
-        name="password"
+        {...register("password", {
+          required: "* 입력",
+        })}
         type="password"
-        placeholder="8자 이상"
-        onChange={handleChange}
       />
       <EmailLoginBtn type="submit">로그인</EmailLoginBtn>
+      <LoginMsgWrapper>
+        <ErrMsg>{loginFailed}</ErrMsg>
+      </LoginMsgWrapper>
     </LoginFormContainer>
   );
 }
@@ -113,4 +114,13 @@ const EmailLoginBtn = styled.button`
     background-color: ${(props) => props.theme.btnFocusColor};
     transition: 0.2s;
   }
+`;
+
+const ErrMsg = styled.span`
+  color: red;
+`;
+
+const LoginMsgWrapper = styled.div`
+  text-align: center;
+  padding-top: 20px;
 `;
