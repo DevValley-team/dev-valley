@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "nodemon --watch '*.tsx' --exec 'ts-node' --project tsconfig.server.json server/server.ts ",
+    "dev": "nodemon --watch '*.tsx' --exec ts-node --project tsconfig.server.json server/server.ts ",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -20,6 +20,7 @@
     "express": "^4.18.2",
     "express-async-handler": "^1.2.0",
     "express-session": "^1.17.3",
+    "moment": "^2.29.4",
     "next": "13.2.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",

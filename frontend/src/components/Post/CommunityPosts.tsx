@@ -1,3 +1,4 @@
+import formattedDate from "@/utils/formattedDate";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 
@@ -33,8 +34,8 @@ export default function CommunityPosts({ postInfo }: IPropInfo) {
   return (
     <PostContainer>
       <WriterContainer>
-        {postInfo.user.nickname} · LV.{postInfo.user.experience} ·
-        {postInfo.createdAt}
+        {postInfo.user.nickname} · ★{postInfo.user.experience} ·
+        {formattedDate(postInfo.createdAt)}
       </WriterContainer>
       <Title onClick={() => postOnClick({ id: postInfo.id })}>
         {postInfo.title}

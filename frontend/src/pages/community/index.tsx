@@ -1,4 +1,4 @@
-import CommunityPosts from "@/components/CommunityPosts";
+import CommunityPosts from "@/components/Post/CommunityPosts";
 import styled from "styled-components";
 import { useRouter } from "next/router";
 import Seo from "@/components/Seo";
@@ -27,31 +27,7 @@ interface IPropsData {
   data: IData | null;
 }
 
-const dummyData = [
-  {
-    id: 1,
-    title: "html, css가 너무 어렵습니다..",
-    nickname: "치킨과콜라",
-    level: 3,
-    date: "2023-03-29 15:00:00",
-    views: 20,
-    comments: 2,
-    likes: 3,
-  },
-  {
-    id: 2,
-    title: "좋아하는것과 잘하고싶은건",
-    nickname: "초록 새싹",
-    level: 2,
-    date: "2023-03-29 14:00:00",
-    views: 20,
-    comments: 1,
-    likes: 4,
-  },
-];
-
 export default function community({ data }: IPropsData) {
-  console.log(data);
   const router = useRouter();
   return (
     <Container>
