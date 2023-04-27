@@ -3,7 +3,7 @@ export default () => ({
     endpoint: process.env.ENDPOINT || "http://localhost:3000",
     host: process.env.HOST || "localhost",
     port: parseInt(process.env.PORT, 10) || 3000,
-    clientUrl: process.env.CLIENT_URL || "http://localhost:3000",
+    corsOrigin: process.env.CORS_ORIGIN || "http://localhost:3000",
     jwtAccessSecret: process.env.JWT_ACCESS_SECRET,
     jwtRefreshSecret: process.env.JWT_REFRESH_SECRET,
     jwtAccessExpiresIn: process.env.JWT_ACCESS_EXPIRES_IN,

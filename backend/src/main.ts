@@ -9,18 +9,6 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
 
-  app.use(helmet());
-  app.enableCors({
-    origin: configService.get<string>('app.clientUrl'),
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    credentials: true,
-  });
-  app.setGlobalPrefix('api');
-  app.useGlobalPipes(new ValidationPipe({
-    whitelist: true,
-    disableErrorMessages: false
-  }));
-
   const config = new DocumentBuilder()
     .setTitle('🏔️ 개발자의 협곡 🏔️')
     .setDescription('📒 개발자의 협곡 API 문서입니다.')
@@ -37,6 +25,17 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-document', app, document);
+
+  app.use(helmet());
+  app.enableCors({
+    origin: configService.get<string>('app.corsOrigin'),
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+  });
+  app.setGlobalPrefix('api');
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,
+    disableErrorMessages: false
+  }));
 
   await app.listen(configService.get<number>('app.port'));
 }

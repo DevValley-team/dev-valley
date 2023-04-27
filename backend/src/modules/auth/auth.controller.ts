@@ -36,6 +36,7 @@ export class AuthController {
   @Public()
   @Post('login')
   @UseGuards(LocalAuthGuard)
+  @HttpCode(HttpStatus.OK)
   async login(@Body() body: LoginUserDto, @Request() req) {
     return await this.authService.login(req.user)
   }
