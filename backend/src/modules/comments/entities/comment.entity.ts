@@ -51,6 +51,6 @@ export class Comment {
   @CreateDateColumn()
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ onUpdate: 'NO ACTION' })
   updatedAt: Date;
 }

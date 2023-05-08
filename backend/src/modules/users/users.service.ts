@@ -14,13 +14,7 @@ export class UsersService {
 
   async create(dto: CreateUserDto): Promise<User> {
     const user = this.userRepository.create(dto);
-
-    // TODO: admin 인증 로직 강화
-    if (dto.isAdmin) {
-      user.role = UserRole.ADMIN;
-    } else {
-      user.role = UserRole.GUEST;
-    }
+    user.role = UserRole.GUEST;
 
     return await this.userRepository.manager.transaction(async (entityManager: EntityManager) => {
       const savedUser = await entityManager.save(user);
@@ -30,33 +24,11 @@ export class UsersService {
     });
   }
 
-  async findOneById(id: number): Promise<User> {
-    if (!id) return null;
-
-    const user = await this.userRepository.findOne({ where: {id} });
-
-    if (!user) throw new NotFoundException('User not found.');
-
-    return user;
-  }
-
-  async findOneByEmail(email: string): Promise<User> {
-    if (!email) throw new BadRequestException();
-
-    const user = await this.userRepository.findOne({ where: { email } });
-
-    if (!user) throw new NotFoundException('User not found.');
-
-    return user;
-  }
-
   async update(id: number, attrs: Partial<User>): Promise<User> {
-    const user = await this.findOneById(id);
+    const user = await this.findOneByIdOrThrow(id);
 
-    if (!user) throw new NotFoundException('User not found.');
-
-    Object.assign(user, attrs);
-    return this.userRepository.save(user);
+    const updatedUser = Object.assign(user, attrs);
+    return this.userRepository.save(updatedUser);
   }
 
   async updateLastLogInAt(user: User): Promise<void> {
@@ -70,21 +42,35 @@ export class UsersService {
     });
   }
 
-  async remove(id: number, currentUser: CurrentUserDto): Promise<boolean> {
-    if (currentUser.id !== id) throw new ForbiddenException('You do not have permission to do this.');
+  async remove(id: number, currentUser: CurrentUserDto) {
+    if (currentUser.id !== id) throw new ForbiddenException('접근권한이 없습니다.');
 
-    const result = await this.userRepository.softDelete(id);
+    const user = await this.findOneByIdOrThrow(id);
 
-    if (result.affected === 0) throw new NotFoundException('User not found.');
+    const result = await this.userRepository.softRemove(user);
+  }
 
-    return true;
+  async findOneByIdOrThrow(id: number): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { id } });
+
+    if (!user) throw new NotFoundException('유저를 찾을 수 없습니다.');
+
+    return user;
+  }
+
+  async findOneByEmailOrThrow(email: string): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { email } });
+
+    if (!user) throw new NotFoundException('유저를 찾을 수 없습니다.');
+
+    return user;
   }
 
   async isEmailExists(email: string): Promise<boolean> {
-    return !!await this.userRepository.findOne({ where: { email } });
+    return 0 < await this.userRepository.count({ where: { email } });
   }
 
   async isNicknameExists(nickname: string): Promise<boolean> {
-    return !!await this.userRepository.findOne({ where: { nickname } });
+    return 0 < await this.userRepository.count({ where: { nickname } });
   }
 }

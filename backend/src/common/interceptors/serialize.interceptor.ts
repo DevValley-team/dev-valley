@@ -2,6 +2,7 @@ import { CallHandler, ExecutionContext, NestInterceptor, UseInterceptors } from 
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { plainToInstance } from "class-transformer";
+import { ApiResponse } from "@nestjs/swagger";
 
 interface ClassConstructor<T> {
   new (...args: any[]): T;
@@ -21,6 +22,6 @@ export class SerializeInterceptor<T> implements NestInterceptor {
           strategy: 'excludeAll',
         });
       })
-    )
+    );
   }
 }

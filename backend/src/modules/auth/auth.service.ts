@@ -15,17 +15,18 @@ import { EmailService } from "../../infrastructure/email/email.service";
 import { v4 as uuidv4 } from 'uuid';
 import { UserRole } from "../users/entities/user-role.enum";
 import { VerifyEmailDto } from "./dtos/verify-email.dto";
+import { TokenResponseDto } from "./dtos/response/token-response.dto";
 
 @Injectable()
 export class AuthService {
   constructor(@InjectRepository(AuthUser) private authUserRepository: Repository<AuthUser>,
-              private readonly usersService: UsersService,
               private readonly jwtService: JwtService,
               private readonly emailService: EmailService,
-              private readonly configService: ConfigService) {}
+              private readonly configService: ConfigService,
+              private readonly usersService: UsersService,) {}
 
   async validateUser(email: string, password: string) {
-    const user = await this.usersService.findOneByEmail(email);
+    const user = await this.usersService.findOneByEmailOrThrow(email);
 
     if (!user) throw new NotFoundException('유저를 찾을 수 없습니다.');
 
@@ -51,12 +52,13 @@ export class AuthService {
 
     const newUser = await this.usersService.create(createUserDto);
 
-    await this.sendEmailVerification(newUser);
+    // TODO: 개발기간에는 이메일 인증을 생략
+    // await this.sendEmailVerification(newUser);
 
     return newUser;
   }
 
-  async login(user: User) {
+  async login(user: User): Promise<TokenResponseDto> {
     const payload: CurrentUserDto = {
       id: user.id,
       email: user.email,
@@ -67,10 +69,10 @@ export class AuthService {
     const accessToken = this.jwtService.sign(payload);
     const refreshToken = await this.generateRefreshToken(payload);
 
-    return { accessToken, refreshToken };
+    return new TokenResponseDto(accessToken, refreshToken);
   }
 
-  async refresh(refreshTokenDto: RefreshTokenDto) {
+  async refresh(refreshTokenDto: RefreshTokenDto): Promise<TokenResponseDto> {
     const { refreshToken } = refreshTokenDto;
 
     let decoded;
@@ -82,13 +84,11 @@ export class AuthService {
       throw new UnauthorizedException('Please login to continue.');
     }
 
-
     const authUser = await this.authUserRepository.findOne({ where: { userId: decoded.id } });
 
     if (authUser.refreshToken !== refreshToken) {
       throw new UnauthorizedException('Please login to continue.');
     }
-
 
     const payload: CurrentUserDto = {
       id: decoded.id,
@@ -100,7 +100,7 @@ export class AuthService {
     const accessToken = this.jwtService.sign(payload);
     const newRefreshToken = await this.generateRefreshToken(payload);
 
-    return { accessToken, refreshToken: newRefreshToken };
+    return new TokenResponseDto(accessToken, newRefreshToken);
   }
 
   async verifyEmail(verifyEmailDto: VerifyEmailDto) {
@@ -108,17 +108,14 @@ export class AuthService {
 
     const authUser = await this.authUserRepository.findOne({ where: { userId: id } });
 
-    if (!authUser) {
+    if (!authUser)
       throw new BadRequestException('유저를 찾을 수 없습니다.');
-    }
 
-    if (authUser.emailTokenExpiresIn < new Date()) {
+    if (authUser.emailTokenExpiresIn < new Date())
       throw new BadRequestException('이메일 인증 요청이 만료되었습니다.');
-    }
 
-    if (authUser.emailToken !== token) {
+    if (authUser.emailToken !== token)
       throw new BadRequestException('인증 토큰이 일치하지 않습니다.');
-    }
 
     authUser.emailVerified = true;
     authUser.emailToken = null;

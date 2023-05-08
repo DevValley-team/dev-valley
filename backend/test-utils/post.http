@@ -4,7 +4,7 @@ Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "title": "Lorem Ipsum is si2222233344445555566666777",
+  "title": "Loremwww Ipsum is si2222233344445555566666777",
   "content": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
   "categoryId": 1
 }
@@ -16,16 +16,28 @@ GET {{domain}}/api/posts?categoryId=1&page=1&limit=10
 GET {{domain}}/api/posts/2
 Authorization: Bearer {{accessToken}}
 
+### 게시글 상세 조회
+GET {{domain}}/api/posts/2
+
 ### 게시글 내용 수정
-PATCH {{domain}}/api/posts/28
+PATCH {{domain}}/api/posts/2
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "title": "하ㄴㄴ하",
-  "categoryId": 2
+  "title": "안녕하세요",
+  "content": "하",
+  "categoryId": 1
 }
 
 ### 게시글 삭제
 DELETE {{domain}}/api/posts/3
+Authorization: Bearer {{accessToken}}
+
+### 좋아요
+POST {{domain}}/api/posts/2/like
+Authorization: Bearer {{accessToken}}
+
+### 좋아요 취소
+DELETE {{domain}}/api/posts/2/like
 Authorization: Bearer {{accessToken}}

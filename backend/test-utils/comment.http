@@ -37,3 +37,11 @@ Content-Type: application/json
 ### 댓글 삭제
 DELETE {{domain}}/api/comments/2
 Authorization: Bearer {{accessToken}}
+
+### 댓글 좋아요
+POST {{domain}}/api/comments/2/like
+Authorization: Bearer {{accessToken}}
+
+### 댓글 좋아요 취소
+DELETE {{domain}}/api/comments/2/like
+Authorization: Bearer {{accessToken}}
