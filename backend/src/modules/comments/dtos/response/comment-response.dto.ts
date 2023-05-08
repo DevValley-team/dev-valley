@@ -17,6 +17,10 @@ export class CommentResponseDto {
   @Type(() => UserSummaryResponseDto)
   user: UserSummaryResponseDto;
 
+  @ApiProperty({ type: Number })
+  @Expose()
+  likeCount: number;
+
   @ApiProperty({ type: Boolean, default: false })
   @Expose()
   isBlinded: boolean;

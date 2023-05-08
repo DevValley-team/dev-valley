@@ -69,14 +69,21 @@ export class CommentsController {
     return await this.commentsService.getComments(getCommentsDto);
   }
 
+  @ApiOperation({ summary: '댓글 좋아요' })
+  @ApiResponse({ status: HttpStatus.CREATED, type: CommentResponseDto })
   @Post(':id/like')
-  like(@Param('id', ParseIntPipe) id: number) {
-
+  async like(@Param('id', ParseIntPipe) id: number,
+             @CurrentUser() currentUser: CurrentUserDto) {
+    return await this.commentsService.likeComment(id, currentUser);
   }
 
+  @ApiOperation({ summary: '댓글 좋아요 취소' })
+  @ApiResponse({ status: HttpStatus.NO_CONTENT })
   @Delete(':id/like')
-  dislike(@Param('id', ParseIntPipe) id: number) {
-
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async dislike(@Param('id', ParseIntPipe) id: number,
+                @CurrentUser() currentUser: CurrentUserDto) {
+    return await this.commentsService.unlikeComment(id, currentUser);
   }
 
 }

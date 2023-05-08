@@ -118,6 +118,7 @@ export class PostsService {
 
     if (postLikeCount > 0) throw new ConflictException('이미 좋아요를 눌렀습니다.');
 
+    // user, currentUser userId 가 currentUser에 있으므로 적용하였음.
     const newPostLike = this.postLikeRepository.create({ post, user: currentUser });
     await this.postLikeRepository.save(newPostLike);
 
