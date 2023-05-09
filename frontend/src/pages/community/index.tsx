@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import Seo from "@/components/Seo";
 import axios from "axios";
 import { Pagination } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface IResult {
   id: number;
@@ -40,6 +40,19 @@ export default function community({ data }: IPropsData) {
       query: { page: newPage },
     });
   };
+
+  // 새로 고침 시 page number가 1이 되는 오류 해결
+  useEffect(() => {
+    const queryString = window.location.search; // "?page=2"
+    const searchParams = new URLSearchParams(queryString.slice(1)); // {page: "2"}
+    const page = searchParams.get("page"); // "2"
+    if (page === null) {
+      setCurrentPage(1);
+    } else {
+      setCurrentPage(parseInt(page));
+    }
+  }, []);
+
   return (
     <Container>
       <Seo title="Community" />
