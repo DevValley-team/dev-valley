@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { useRouter } from "next/router";
 import Seo from "@/components/Seo";
 import axios from "axios";
+import { Pagination } from "@mui/material";
+import { useState } from "react";
 
 interface IResult {
   id: number;
@@ -28,7 +30,16 @@ interface IPropsData {
 }
 
 export default function community({ data }: IPropsData) {
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const router = useRouter();
+
+  const handlePage = (event: React.ChangeEvent<unknown>, newPage: number) => {
+    setCurrentPage(newPage);
+    router.push({
+      pathname: "/community",
+      query: { page: newPage },
+    });
+  };
   return (
     <Container>
       <Seo title="Community" />
@@ -49,14 +60,25 @@ export default function community({ data }: IPropsData) {
           return <CommunityPosts key={post.id} postInfo={post} />;
         })}
       </PostContainer>
+      <Pagination
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          marginTop: "30px",
+        }}
+        count={data?.totalPages}
+        page={currentPage}
+        onChange={handlePage}
+      />
     </Container>
   );
 }
 
 export async function getServerSideProps(context: any) {
   try {
+    const page = !context.query.page ? "1" : context.query.page;
     const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/posts?categoryId=1&page=1&limit=10`
+      `${process.env.NEXT_PUBLIC_API_URL}/api/posts?categoryId=1&page=${page}&limit=10`
     );
     const data = res.data;
     return {
