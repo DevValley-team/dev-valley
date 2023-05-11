@@ -7,17 +7,14 @@ import {
   HttpStatus,
   Param,
   ParseIntPipe,
-  Patch,
   Post,
 } from "@nestjs/common";
 import { CategoriesService } from "./categories.service";
-import { UpdateCategoryDto } from "./dtos/update-category.dto";
 import { CreateCategoryDto } from "./dtos/create-category.dto";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Serialize } from "../../common/interceptors/serialize.interceptor";
 import { Public } from "../../common/decorators/public.decorator";
 import { CategoryResponseDto } from "./dtos/response/category-response.dto";
-import { PostDetailsResponseDto } from "../posts/dtos/response/post-details-response.dto";
 
 @ApiTags('카테고리')
 @Controller('categories')
@@ -33,14 +30,6 @@ export class CategoriesController {
     return await this.categoriesService.create(createCategoryDto);
   }
 
-  @ApiOperation({ summary: '카테고리 수정' })
-  @ApiResponse({ status: HttpStatus.OK })
-  @Patch(':id')
-  async update(@Param('id', ParseIntPipe) id: number,
-               @Body() updateCategoryDto: UpdateCategoryDto) {
-    return await this.categoriesService.update(id, updateCategoryDto);
-  }
-
   @ApiOperation({ summary: '카테고리 삭제' })
   @ApiResponse({ status: HttpStatus.NO_CONTENT })
   @Delete(':id')
@@ -54,10 +43,4 @@ export class CategoriesController {
   async findAll() {
 
   }
-
-  @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number) {
-
-  }
-
 }

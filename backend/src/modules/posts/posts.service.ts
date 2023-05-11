@@ -21,6 +21,7 @@ import { CreatePostResponseDto } from "./dtos/response/create-post-response.dto"
 import { Serialize } from "../../common/interceptors/serialize.interceptor";
 import { plainToInstance } from "class-transformer";
 import { PostLike } from "./entities/post-like.entity";
+import { log } from "handlebars";
 
 @Injectable()
 export class PostsService {
@@ -30,8 +31,8 @@ export class PostsService {
               private readonly usersService: UsersService) {}
 
   async create(createPostDto: CreatePostDto, currentUser: CurrentUserDto): Promise<CreatePostResponseDto> {
-    const { categoryId } = createPostDto;
-    const category = await this.categoriesService.findOneByIdOrThrow(categoryId);
+    const { categoryName } = createPostDto;
+    const category = await this.categoriesService.findOneByNameOrThrow(categoryName);
 
     const user = await this.usersService.findOneByIdOrThrow(currentUser.id);
 
@@ -53,6 +54,7 @@ export class PostsService {
 
     if (currentUser.id !== post.user.id) throw new ForbiddenException('접근권한이 없습니다.');
 
+    // TODO: 카테고리 존재 유무 체크
     const updatedPost = Object.assign(post, updatePostDto);
     return await this.postRepository.save(updatedPost);
   }
@@ -80,12 +82,12 @@ export class PostsService {
   }
 
   async getPostsByCategory(getPostsDto: GetPostsDto): Promise<PageDto<PostSummaryResponseDto>> {
-    const { categoryId, page, limit } = getPostsDto;
+    const { categoryName, page, limit } = getPostsDto;
     const offset = (page - 1) * limit;
 
     const [posts, totalPosts] = await this.postRepository.createQueryBuilder('post')
       .leftJoinAndSelect('post.user', 'user')
-      .where('post.category_id = :categoryId', { categoryId })
+      .where('post.category_name = :categoryName', { categoryName })
       .orderBy('post.id', 'DESC')
       .skip(offset)
       .take(limit)
@@ -98,12 +100,13 @@ export class PostsService {
   async getPostDetails(id: number): Promise<Post> {
     const post = await this.postRepository.findOne({
       where: { id },
-      relations: ['user', 'category']
+      relations: ['user']
     });
-
+    console.log(post)
     if (!post) throw new NotFoundException('게시글을 찾을 수 없습니다.');
 
-    await this.postRepository.increment({ id }, 'viewCount', 1)
+    // TODO: 고유 방문자
+    await this.postRepository.increment({ id }, 'viewCount', 1);
 
     return post;
   }

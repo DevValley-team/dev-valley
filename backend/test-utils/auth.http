@@ -3,9 +3,9 @@ POST {{domain}}/api/auth/signup
 Content-Type: application/json
 
 {
-  "email": "asdasddd@dfss.com",
-  "password": "111122223333",
-  "nickname": "test4"
+  "email": "test2@test.com",
+  "password": "12345678",
+  "nickname": "test2"
 }
 
 ### 유저 로그인
@@ -13,8 +13,8 @@ POST {{domain}}/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "asdasddd@dfss.com",
-  "password": "111122223333"
+  "email": "test@test.com",
+  "password": "12345678"
 }
 
 ### 이메일 중복 체크

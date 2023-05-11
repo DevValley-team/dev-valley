@@ -13,7 +13,7 @@ export class UpdatePostDto {
   content: string;
 
   @ApiProperty()
-  @IsNumber()
+  @IsString()
   @IsOptional()
-  categoryId: number;
+  categoryName: string;
 }
