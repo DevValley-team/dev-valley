@@ -31,8 +31,8 @@ export class UsersService {
     return this.userRepository.save(updatedUser);
   }
 
-  async updateLastLogInAt(user: User): Promise<void> {
-    await this.userRepository.update(user.id, { lastLogInAt: new Date() });
+  async updateLastLoginAt(user: User): Promise<void> {
+    await this.userRepository.update(user.id, { lastLoginAt: new Date() });
   }
 
   async updateRole(id: number, role: UserRole) {

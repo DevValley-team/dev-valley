@@ -53,7 +53,7 @@ export class User {
   commentLikes: CommentLike[];
 
   @Column({ nullable: true })
-  lastLogInAt: Date;
+  lastLoginAt: Date;
 
   @CreateDateColumn()
   createdAt: Date;
