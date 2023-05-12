@@ -5,6 +5,8 @@ import Seo from "@/components/Seo";
 import axios from "axios";
 import { Pagination } from "@mui/material";
 import { useEffect, useState } from "react";
+import { useRecoilState } from "recoil";
+import { authState } from "@/recoil";
 
 interface IResult {
   id: number;
@@ -32,6 +34,7 @@ interface IPropsData {
 export default function community({ data }: IPropsData) {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const router = useRouter();
+  const [isLogin, setIsLogin] = useRecoilState(authState);
 
   const handlePage = (event: React.ChangeEvent<unknown>, newPage: number) => {
     setCurrentPage(newPage);
@@ -53,15 +56,22 @@ export default function community({ data }: IPropsData) {
     }
   }, []);
 
+  const handleWrite = () => {
+    if (isLogin) {
+      router.push("/community/write");
+    } else {
+      alert("로그인 후 이용해주세요");
+      router.push("/login");
+    }
+  };
+
   return (
     <Container>
       <Seo title="Community" />
       <TopBanner>자유게시판</TopBanner>
       <WriteSearchContainer>
         <WriteBtnContainer>
-          <WriteBtn onClick={() => router.push("/community/write")}>
-            글쓰기
-          </WriteBtn>
+          <WriteBtn onClick={handleWrite}>글쓰기</WriteBtn>
         </WriteBtnContainer>
         <SearchContainer>
           <SearchInput type="text" placeholder="자유게시판 내 게시글 조회" />
