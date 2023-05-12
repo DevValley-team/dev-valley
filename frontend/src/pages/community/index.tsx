@@ -91,7 +91,7 @@ export async function getServerSideProps(context: any) {
   try {
     const page = !context.query.page ? "1" : context.query.page;
     const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/posts?categoryId=1&page=${page}&limit=10`
+      `${process.env.NEXT_PUBLIC_API_URL}/api/posts?categoryName=자유게시판&page=${page}&limit=10`
     );
     const data = res.data;
     return {
