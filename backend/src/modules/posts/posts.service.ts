@@ -22,6 +22,8 @@ import { Serialize } from "../../common/interceptors/serialize.interceptor";
 import { plainToInstance } from "class-transformer";
 import { PostLike } from "./entities/post-like.entity";
 import { log } from "handlebars";
+import { SerializeAndSetIsAuthor } from "../../common/interceptors/serialize-and-set-is-author.interceptor";
+import { PostDetailsResponseDto } from "./dtos/response/post-details-response.dto";
 
 @Injectable()
 export class PostsService {
@@ -102,7 +104,7 @@ export class PostsService {
       where: { id },
       relations: ['user']
     });
-    console.log(post)
+
     if (!post) throw new NotFoundException('게시글을 찾을 수 없습니다.');
 
     // TODO: 고유 방문자
