@@ -46,6 +46,8 @@ const Container = styled.header`
   height: 60px;
   padding-left: 20px;
   padding-right: 20px;
+  background-color: ${(props) => props.theme.backgroundColor};
+  z-index: 1;
 `;
 
 const Title = styled.span`
