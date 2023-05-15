@@ -2,7 +2,7 @@ import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
-  Entity,
+  Entity, Index,
   OneToMany, OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
@@ -15,11 +15,12 @@ import { CommentLike } from "../../comments/entities/comment-like.entity";
 import { AuthUser } from "./auth-user.entity";
 
 @Entity()
+@Index(["email"], { unique: true })
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column()
   email: string;
 
   @Column()
