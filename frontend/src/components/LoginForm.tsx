@@ -23,14 +23,10 @@ export default function LoginForm() {
 
   const onVaild = async (data: ILoginData) => {
     try {
-      const res = await axios.post(
-        "/api/auth/login",
-        {
-          email: data.email,
-          password: data.password,
-        },
-        { withCredentials: true }
-      );
+      const res = await axios.post("/api/auth/login", {
+        email: data.email,
+        password: data.password,
+      });
       if (res.status === 200) {
         setAccessToken(res.data.accessToken);
         router.push("/", undefined, { shallow: true });
