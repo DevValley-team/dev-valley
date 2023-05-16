@@ -2,6 +2,7 @@ import CommentArea from "@/components/Comment/CommentArea";
 import PostUserProfile from "@/components/Post/PostUserProfile";
 import axios from "axios";
 import styled from "styled-components";
+import { Content } from "./PostContentStyle";
 
 interface ICategory {
   id: number;
@@ -61,7 +62,10 @@ export default function CommunityPost(data: IPropsData) {
         }}
       />
       <Title>{data.postData.title}</Title>
-      <Content>{data.postData.content}</Content>
+
+      <Content
+        dangerouslySetInnerHTML={{ __html: data.postData.content }}
+      ></Content>
       <CommentArea commentData={data.commentData} />
     </>
   );
@@ -95,10 +99,4 @@ const Title = styled.div`
   font-weight: bold;
   margin-top: 30px;
   margin-bottom: 30px;
-`;
-
-const Content = styled.div`
-  color: white;
-  font-size: 1.2rem;
-  line-height: 2rem;
 `;

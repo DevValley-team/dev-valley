@@ -19,11 +19,9 @@ const PostEditor = ({ content = "", editorRef }: Props) => {
 
   const toolbarItems = [
     ["heading", "bold", "italic", "strike"],
-    ["hr"],
     ["ul", "ol", "task"],
-    ["table", "link"],
+    ["link"],
     ["code"],
-    ["scrollSync"],
   ];
 
   const handleConfirm = async () => {
