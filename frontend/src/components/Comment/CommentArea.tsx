@@ -1,5 +1,11 @@
 import formattedDate from "@/utils/formattedDate";
 import styled from "styled-components";
+import { useRef } from "react";
+import dynamic from "next/dynamic";
+
+const CommentWriter = dynamic(() => import("./CommentWriter"), {
+  ssr: false,
+});
 
 interface IUser {
   nickname: string;
@@ -28,9 +34,11 @@ export default function CommentArea({
 }: {
   commentData: IPropsData;
 }) {
+  const ref = useRef<any>(null);
   return (
     <Container>
       <InfoText>총 {commentData.results.length}개의 댓글이 있습니다.</InfoText>
+      <CommentWriter editorRef={ref} />
       {commentData.results?.map((comment) => {
         return (
           <Comment key={comment.id}>

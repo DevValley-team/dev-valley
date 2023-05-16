@@ -2,8 +2,8 @@ import CommentArea from "@/components/Comment/CommentArea";
 import PostUserProfile from "@/components/Post/PostUserProfile";
 import axios from "axios";
 import styled from "styled-components";
-import { Content } from "./PostContentStyle";
-
+import { Content } from "../../components/Post/PostContentStyle";
+import { useQuery } from "@tanstack/react-query";
 interface ICategory {
   id: number;
   name: string;
@@ -50,8 +50,18 @@ interface IPropsData {
 }
 
 export default function CommunityPost(data: IPropsData) {
+  const { data: commentData, isLoading } = useQuery<ICommentData>(
+    ["comments", data.postData.id],
+    async () => {
+      const commentRes = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/comments?postId=${data.postData.id}`
+      );
+      return commentRes.data;
+    },
+    { initialData: data.commentData }
+  );
   return (
-    <>
+    <Container>
       <PostUserProfile
         data={{
           nickname: data.postData.user.nickname,
@@ -66,8 +76,8 @@ export default function CommunityPost(data: IPropsData) {
       <Content
         dangerouslySetInnerHTML={{ __html: data.postData.content }}
       ></Content>
-      <CommentArea commentData={data.commentData} />
-    </>
+      <CommentArea commentData={commentData} />
+    </Container>
   );
 }
 
@@ -92,6 +102,10 @@ export async function getServerSideProps(context: any) {
     return { props: { data: null } };
   }
 }
+
+const Container = styled.div`
+  padding: 0px 20px;
+`;
 
 const Title = styled.div`
   color: white;
