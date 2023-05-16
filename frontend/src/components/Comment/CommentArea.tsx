@@ -45,7 +45,7 @@ export default function CommentArea({
             <Nickname>{comment.user.nickname}</Nickname>
             <Info>
               ★{comment.user.experience} · {formattedDate(comment.createdAt)}
-              {comment.createdAt === comment.updatedAt
+              {comment.updatedAt === null
                 ? ""
                 : `(수정됨, ${formattedDate(comment.updatedAt)})`}
             </Info>

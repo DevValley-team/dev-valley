@@ -20,7 +20,7 @@ export default function PostUserProfile(props: IPropsUserProfile) {
       <Info>
         ★{data.experience} · {formattedDate(data.createdAt)} · 조회수{" "}
         {data.viewCount}회{" "}
-        {data.updatedAt == data.createdAt
+        {data.updatedAt === null
           ? ""
           : `(수정됨, ${formattedDate(data.updatedAt)})`}
       </Info>
