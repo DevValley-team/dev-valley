@@ -58,6 +58,7 @@ export class PostsService {
 
     // TODO: 카테고리 존재 유무 체크
     const updatedPost = Object.assign(post, updatePostDto);
+    updatedPost.updatedAt = new Date();
     return await this.postRepository.save(updatedPost);
   }
 

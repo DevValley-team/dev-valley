@@ -48,7 +48,7 @@ export class Post {
   @CreateDateColumn()
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @Column({ type: 'datetime', nullable: true })
   updatedAt: Date;
 
   @DeleteDateColumn()

@@ -28,6 +28,7 @@ export class UsersService {
     const user = await this.findOneByIdOrThrow(id);
 
     const updatedUser = Object.assign(user, attrs);
+    updatedUser.updatedAt = new Date();
     return this.userRepository.save(updatedUser);
   }
 
@@ -66,6 +67,7 @@ export class UsersService {
     return user;
   }
 
+  // TODO: 이 함수들은 Repository 계층이 더 적합하려나..?
   async isEmailExists(email: string): Promise<boolean> {
     return 0 < await this.userRepository.count({ where: { email } });
   }

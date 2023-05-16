@@ -54,6 +54,7 @@ export class CommentsService {
     if (!comment) throw new NotFoundException('댓글이 존재하지 않습니다.');
 
     const updatedComment = Object.assign(comment, attrs);
+    updatedComment.updatedAt = new Date();
     return await this.commentRepository.save(updatedComment);
   }
 
