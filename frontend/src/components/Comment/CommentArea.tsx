@@ -1,6 +1,4 @@
 import formattedDate from "@/utils/formattedDate";
-import axios from "axios";
-import { useEffect } from "react";
 import styled from "styled-components";
 
 interface IUser {
@@ -35,7 +33,7 @@ export default function CommentArea({
       <InfoText>총 {commentData.results.length}개의 댓글이 있습니다.</InfoText>
       {commentData.results?.map((comment) => {
         return (
-          <Comment>
+          <Comment key={comment.id}>
             <Nickname>{comment.user.nickname}</Nickname>
             <Info>
               ★{comment.user.experience} · {formattedDate(comment.createdAt)}
