@@ -4,6 +4,8 @@ import axios from "axios";
 import styled from "styled-components";
 import { Content } from "../../components/Post/PostContentStyle";
 import { useQuery } from "@tanstack/react-query";
+import { Pagination } from "@mui/material";
+import { useState } from "react";
 interface ICategory {
   id: number;
   name: string;
@@ -29,6 +31,7 @@ interface ICommentData {
   page: number;
   limit: number;
   totalPages: number;
+  totalItems: number;
 }
 
 interface IPostData {
@@ -50,16 +53,32 @@ interface IPropsData {
 }
 
 export default function CommunityPost(data: IPropsData) {
+  const [commentPages, setCommentPages] = useState(1);
   const { data: commentData, isLoading } = useQuery<ICommentData>(
-    ["comments", data.postData.id],
+    ["comments", data.postData.id, commentPages],
     async () => {
       const commentRes = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/comments?postId=${data.postData.id}`
+        `${process.env.NEXT_PUBLIC_API_URL}/api/comments`,
+        {
+          params: {
+            postId: data.postData.id,
+            limit: 100,
+            page: commentPages,
+          },
+        }
       );
       return commentRes.data;
     },
     { initialData: data.commentData }
   );
+
+  const handleCommentPage = (
+    event: React.ChangeEvent<unknown>,
+    newPage: number
+  ) => {
+    setCommentPages(newPage);
+  };
+
   return (
     <Container>
       <PostUserProfile
@@ -77,6 +96,16 @@ export default function CommunityPost(data: IPropsData) {
         dangerouslySetInnerHTML={{ __html: data.postData.content }}
       ></Content>
       <CommentArea commentData={commentData} />
+      <Pagination
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          marginTop: "30px",
+        }}
+        count={commentData.totalPages}
+        page={commentPages}
+        onChange={handleCommentPage}
+      />
     </Container>
   );
 }
@@ -91,7 +120,7 @@ export async function getServerSideProps(context: any) {
 
     // id에 해당하는 댓글의 내용
     const commentRes = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/comments?postId=${context.params.id}`
+      `${process.env.NEXT_PUBLIC_API_URL}/api/comments?postId=${context.params.id}?limit=100&page=1`
     );
     const commentData = commentRes.data;
 
