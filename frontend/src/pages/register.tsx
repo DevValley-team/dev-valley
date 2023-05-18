@@ -1,6 +1,5 @@
 import Seo from "@/components/Seo";
 import SignupForm from "@/components/SignupForm";
-import TopNav from "@/components/TopNav";
 import Link from "next/link";
 import styled from "styled-components";
 

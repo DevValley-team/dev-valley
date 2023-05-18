@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import TopNav from "./TopNav";
 import { useRecoilState } from "recoil";
-import { authState } from "@/recoil";
+import { accessTokenState } from "@/recoil/user";
 import axios from "axios";
 
 interface ILayoutProps {
@@ -10,7 +10,7 @@ interface ILayoutProps {
 
 export default function Layout({ children }: ILayoutProps) {
   // refresh user
-  const [accessToken, setAccessToken] = useRecoilState(authState);
+  const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
   useEffect(() => {
     (async () => {
       try {

@@ -1,4 +1,4 @@
-import { authState } from "@/recoil";
+import { accessTokenState } from "@/recoil/user";
 import axios from "axios";
 import Router, { useRouter } from "next/router";
 import { useState } from "react";
@@ -12,7 +12,7 @@ interface ILoginData {
 
 export default function LoginForm() {
   const router = useRouter();
-  const [accessToken, setAccessToken] = useRecoilState(authState);
+  const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
   const [loginFailed, setLoginFailed] = useState("");
 
   const {

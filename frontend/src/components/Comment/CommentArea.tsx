@@ -87,8 +87,3 @@ const Info = styled.h4`
   font-size: 1.3rem;
   margin-bottom: 20px;
 `;
-
-const CommentContent = styled.h4`
-  color: white;
-  font-size: 1.3rem;
-`;

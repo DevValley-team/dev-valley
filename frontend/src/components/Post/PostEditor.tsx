@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { ChangeEvent, useState } from "react";
 import axios from "axios";
 import { useRecoilState } from "recoil";
-import { authState } from "@/recoil";
+import { accessTokenState } from "@/recoil/user";
 import { useRouter } from "next/router";
 interface Props {
   content: string;
@@ -14,7 +14,7 @@ interface Props {
 
 const PostEditor = ({ content = "", editorRef }: Props) => {
   const [title, setTitle] = useState("");
-  const [accessToken, setAccessToken] = useRecoilState(authState);
+  const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
   const router = useRouter();
 
   const toolbarItems = [

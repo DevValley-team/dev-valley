@@ -6,7 +6,7 @@ import axios from "axios";
 import { Pagination } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
-import { authState } from "@/recoil";
+import { accessTokenState } from "@/recoil/user";
 
 interface IResult {
   id: number;
@@ -34,7 +34,7 @@ interface IPropsData {
 export default function community({ data }: IPropsData) {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const router = useRouter();
-  const [isLogin, setIsLogin] = useRecoilState(authState);
+  const [isLogin, setIsLogin] = useRecoilState(accessTokenState);
 
   const handlePage = (event: React.ChangeEvent<unknown>, newPage: number) => {
     setCurrentPage(newPage);
