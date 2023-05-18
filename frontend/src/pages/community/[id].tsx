@@ -104,6 +104,11 @@ export default function CommunityPost(data: IPropsData) {
       });
   };
 
+  const modifyPost = () => {
+    const currentPath = router.asPath;
+    router.push(`${currentPath}/edit`);
+  };
+
   return (
     <Container>
       <PostUserProfile
@@ -116,7 +121,10 @@ export default function CommunityPost(data: IPropsData) {
         }}
       />
       {userInfo.nickname === data.postData.user.nickname && (
-        <button onClick={deletePost}>삭제</button>
+        <>
+          <button onClick={modifyPost}>수정</button>
+          <button onClick={deletePost}>삭제</button>
+        </>
       )}
       <Title>{data.postData.title}</Title>
       <Content
