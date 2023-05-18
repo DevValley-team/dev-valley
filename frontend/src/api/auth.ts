@@ -33,7 +33,7 @@ router.post("/login", async (req, res) => {
 
 router.get("/refresh", async (req, res) => {
   if (!req.session.refreshToken) {
-    return res.status(200).json({
+    return res.status(203).json({
       error: "Error: RefreshToken is not exist.",
     });
   }

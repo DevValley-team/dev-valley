@@ -6,6 +6,10 @@ import { Content } from "../../components/Post/PostContentStyle";
 import { useQuery } from "@tanstack/react-query";
 import { Pagination } from "@mui/material";
 import { useState } from "react";
+import PostLikeButton from "@/components/Post/PostLikeButton";
+import { useRecoilState } from "recoil";
+import { accessTokenState, userInfoState } from "@/recoil/user";
+import { useRouter } from "next/router";
 interface ICategory {
   id: number;
   name: string;
@@ -54,6 +58,10 @@ interface IPropsData {
 
 export default function CommunityPost(data: IPropsData) {
   const [commentPages, setCommentPages] = useState(1);
+  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
+  const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
+  const router = useRouter();
+
   const { data: commentData, isLoading } = useQuery<ICommentData>(
     ["comments", data.postData.id, commentPages],
     async () => {
@@ -79,6 +87,23 @@ export default function CommunityPost(data: IPropsData) {
     setCommentPages(newPage);
   };
 
+  const deletePost = async () => {
+    await axios
+      .delete(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/posts/${data.postData.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
+      .then((res) => {
+        if (res.status === 204) {
+          router.back();
+        }
+      });
+  };
+
   return (
     <Container>
       <PostUserProfile
@@ -90,11 +115,16 @@ export default function CommunityPost(data: IPropsData) {
           viewCount: data.postData.viewCount,
         }}
       />
+      {userInfo.nickname === data.postData.user.nickname && (
+        <button onClick={deletePost}>삭제</button>
+      )}
       <Title>{data.postData.title}</Title>
-
       <Content
         dangerouslySetInnerHTML={{ __html: data.postData.content }}
       ></Content>
+
+      <PostLikeButton />
+
       <CommentArea commentData={commentData} />
       <Pagination
         style={{
