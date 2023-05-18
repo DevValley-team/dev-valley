@@ -33,13 +33,13 @@ router.post("/login", async (req, res) => {
 
 router.get("/refresh", async (req, res) => {
   if (!req.session.refreshToken) {
-    return res.status(400).json({
+    return res.status(200).json({
       error: "Error: RefreshToken is not exist.",
     });
   }
 
   const [err, result] = await to(
-    axios.post(API_ENDPOINT + "/auth/refresh", {
+    axios.post(API_ENDPOINT + "/api/auth/refresh", {
       refreshToken: req.session.refreshToken,
     })
   );
