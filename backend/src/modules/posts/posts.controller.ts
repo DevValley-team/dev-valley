@@ -71,10 +71,9 @@ export class PostsController {
   @ApiResponse({ status: HttpStatus.OK, type: PostDetailsResponseDto })
   @Public()
   @Get(':id')
-  @SerializeAndSetIsAuthor(PostDetailsResponseDto)
   async getPostDetails(@Param('id', ParseIntPipe) id: number,
                        @CurrentUser() currentUser: CurrentUserDto) {
-    return await this.postsService.getPostDetails(id);
+    return await this.postsService.getPostDetails(id, currentUser);
   }
 
   @Post(':id/like')

@@ -18,11 +18,8 @@ import { CurrentUserDto } from "../../common/dtos/current-user.dto";
 import { PostSummaryResponseDto } from "./dtos/response/post-summary-response.dto";
 import { PageDto } from "../../common/dtos/page.dto";
 import { CreatePostResponseDto } from "./dtos/response/create-post-response.dto";
-import { Serialize } from "../../common/interceptors/serialize.interceptor";
 import { plainToInstance } from "class-transformer";
 import { PostLike } from "./entities/post-like.entity";
-import { log } from "handlebars";
-import { SerializeAndSetIsAuthor } from "../../common/interceptors/serialize-and-set-is-author.interceptor";
 import { PostDetailsResponseDto } from "./dtos/response/post-details-response.dto";
 
 @Injectable()
@@ -100,7 +97,7 @@ export class PostsService {
     return new PageDto(response, page, limit, totalPosts);
   }
 
-  async getPostDetails(id: number): Promise<Post> {
+  async getPostDetails(id: number, currentUser: CurrentUserDto): Promise<PostDetailsResponseDto> {
     const post = await this.postRepository.findOne({
       where: { id },
       relations: ['user']
@@ -111,7 +108,20 @@ export class PostsService {
     // TODO: 고유 방문자
     await this.postRepository.increment({ id }, 'viewCount', 1);
 
-    return post;
+    const responsePost = plainToInstance(PostDetailsResponseDto, post, { strategy: 'excludeAll' });
+
+    if (currentUser) {
+      responsePost['isAuthor'] = post.user.id === currentUser.id;
+
+      const postLikeCount = await this.postLikeRepository.createQueryBuilder('postLike')
+        .where('postLike.post_id = :postId', { postId: id })
+        .andWhere('postLike.user_id = :userId', { userId: currentUser.id })
+        .getCount();
+
+      responsePost['isLiked'] = postLikeCount > 0;
+    }
+
+    return responsePost;
   }
 
   async likePost(id: number, currentUser: CurrentUserDto): Promise<{ postId: number }> {

@@ -43,5 +43,9 @@ export class PostDetailsResponseDto {
 
   @ApiProperty()
   @Expose()
-  isAuthor: boolean;
+  isAuthor: boolean = false;
+
+  @ApiProperty()
+  @Expose()
+  isLiked: boolean = false;
 }
