@@ -23,9 +23,8 @@ export class UsersController {
   @ApiOperation({ summary: '회원 정보 조회' })
   @ApiResponse({ status: HttpStatus.OK, type: UserResponseDto })
   @Get('me')
-  @Serialize(UserResponseDto)
   me(@CurrentUser() currentUser: CurrentUserDto) {
-    return this.usersService.findOneByIdOrThrow(currentUser.id);
+    return this.usersService.getUserDetails(currentUser);
   }
 
   @ApiOperation({ summary: '이메일 중복 확인' })

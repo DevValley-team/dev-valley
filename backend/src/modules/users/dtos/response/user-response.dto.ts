@@ -1,5 +1,7 @@
-import { Expose } from "class-transformer";
+import { Expose, Type } from "class-transformer";
 import { ApiProperty } from "@nestjs/swagger";
+import { AuthUser } from "../../entities/auth-user.entity";
+import { AuthUserResponseDto } from "./auth-user-response.dto";
 
 export class UserResponseDto {
   @ApiProperty()
@@ -24,7 +26,8 @@ export class UserResponseDto {
 
   @ApiProperty()
   @Expose()
-  emailVerified: boolean;
+  @Type(() => AuthUserResponseDto)
+  authUser: AuthUserResponseDto;
 
   @ApiProperty()
   @Expose()

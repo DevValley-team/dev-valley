@@ -6,6 +6,8 @@ import { CreateUserDto } from "./dtos/create-user.dto";
 import { UserRole } from "./entities/user-role.enum";
 import { CurrentUserDto } from "../../common/dtos/current-user.dto";
 import { AuthUser } from "./entities/auth-user.entity";
+import { plainToInstance } from "class-transformer";
+import { UserResponseDto } from "./dtos/response/user-response.dto";
 
 @Injectable()
 export class UsersService {
@@ -49,6 +51,17 @@ export class UsersService {
     const user = await this.findOneByIdOrThrow(id);
 
     const result = await this.userRepository.softRemove(user);
+  }
+
+  async getUserDetails(currentUser: CurrentUserDto) {
+    const { id } = currentUser;
+
+    const user = await this.userRepository.createQueryBuilder('user')
+      .leftJoinAndSelect('user.authUser', 'authUser')
+      .where('user.id = :id', { id })
+      .getOne();
+
+    return plainToInstance(UserResponseDto, user, { strategy: 'excludeAll' });
   }
 
   async findOneByIdOrThrow(id: number): Promise<User> {
