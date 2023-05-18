@@ -28,7 +28,7 @@ export class UserResponseDto {
 
   @ApiProperty()
   @Expose()
-  lastLogInAt: Date;
+  lastLoginAt: Date;
 
   @ApiProperty()
   @Expose()

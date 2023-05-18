@@ -12,10 +12,14 @@ export class PageDto<T> {
   @ApiProperty()
   totalPages: number;
 
+  @ApiProperty()
+  totalItems: number;
+
   constructor(results: T[], page: number, limit: number, totalItems: number) {
     this.results = results;
     this.page = page;
     this.limit = limit;
     this.totalPages = Math.ceil(totalItems / limit);
+    this.totalItems = totalItems;
   }
 }

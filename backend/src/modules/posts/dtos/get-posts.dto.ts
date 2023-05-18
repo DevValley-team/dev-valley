@@ -1,21 +1,23 @@
-import { IsNumber, Max } from "class-validator";
+import { IsNumber, IsOptional, IsString, Max } from "class-validator";
 import { Transform } from "class-transformer";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class GetPostsDto {
   @ApiProperty()
-  @Transform(({ value }) => parseInt(value))
-  @IsNumber()
-  categoryId: number;
+  @IsString()
+    //TODO: max, min
+  categoryName: string;
 
   @ApiProperty()
   @Transform(({ value }) => parseInt(value))
   @IsNumber()
-  page: number;
+  @IsOptional()
+  page?: number = 1;
 
   @ApiProperty()
   @Transform(({ value }) => parseInt(value))
   @IsNumber()
   @Max(100)
-  limit: number;
+  @IsOptional()
+  limit?: number = 10;
 }

@@ -23,7 +23,11 @@ export class Post {
   @Column({ type: 'text' })
   content: string;
 
+  @Column()
+  categoryName: string;
+
   @ManyToOne(type => Category, (category) => category.posts)
+  @JoinColumn()
   category: Category;
 
   @ManyToOne(type => User, (user) => user.posts)
@@ -44,7 +48,7 @@ export class Post {
   @CreateDateColumn()
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @Column({ type: 'datetime', nullable: true })
   updatedAt: Date;
 
   @DeleteDateColumn()

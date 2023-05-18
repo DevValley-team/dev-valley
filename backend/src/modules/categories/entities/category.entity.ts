@@ -1,12 +1,15 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import {
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryColumn,
+  UpdateDateColumn
+} from "typeorm";
 import { Post } from "../../posts/entities/post.entity";
 
 @Entity()
 export class Category {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column()
+  @PrimaryColumn({ length: 20 })
   name: string;
 
   @OneToMany(() => Post, (post) => post.category)
@@ -14,7 +17,4 @@ export class Category {
 
   @CreateDateColumn()
   createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 }

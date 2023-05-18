@@ -18,8 +18,7 @@ export class PostDetailsResponseDto {
 
   @ApiProperty()
   @Expose()
-  @Type(() => CategoryResponseDto)
-  category: CategoryResponseDto;
+  categoryName: string;
 
   @ApiProperty()
   @Expose()

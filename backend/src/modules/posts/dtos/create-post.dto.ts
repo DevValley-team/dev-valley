@@ -10,7 +10,7 @@ export class CreatePostDto {
   @IsString()
   title: string;
 
-  @ApiProperty({ type: Number })
-  @IsNumber()
-  categoryId: number;
+  @ApiProperty({ type: String, example: '자유게시판' })
+  @IsString()
+  categoryName: string;
 }

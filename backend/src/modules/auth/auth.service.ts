@@ -34,7 +34,7 @@ export class AuthService {
 
     if (!passwordMatch) throw new UnauthorizedException('비밀번호가 일치하지 않습니다.');
 
-    await this.usersService.updateLastLogInAt(user);
+    await this.usersService.updateLastLoginAt(user);
     return user;
   }
 
