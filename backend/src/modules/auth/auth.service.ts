@@ -149,7 +149,7 @@ export class AuthService {
       `${this.configService.get<string>('app.endpoint')}/api/auth/verify-email?token=${token}&id=${id}`;
     option.nickname = nickname;
 
-    await this.emailService.sendEmailVerification(option);
+    await this.emailService.sendEmailVerification(email, option);
 
     return updateAuthUser;
   }

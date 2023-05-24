@@ -1,6 +1,7 @@
 export default () => ({
   app: {
     endpoint: process.env.ENDPOINT || "http://localhost:3000",
+    frontendUrl: process.env.FRONTEND_URL || "http://192.168.0.236:3000",
     host: process.env.HOST || "localhost",
     port: parseInt(process.env.PORT, 10) || 3000,
     corsOrigin: process.env.CORS_ORIGIN || "http://localhost:3000",

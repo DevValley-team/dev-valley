@@ -8,7 +8,7 @@ import {
   HttpCode,
   Param,
   Redirect,
-  ParseUUIDPipe, Query, HttpStatus
+  ParseUUIDPipe, Query, HttpStatus, Res
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { CreateUserDto } from "../users/dtos/create-user.dto";
@@ -25,11 +25,13 @@ import { RefreshTokenDto } from "./dtos/refresh-token.dto";
 import { VerifyEmailDto } from "./dtos/verify-email.dto";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { TokenResponseDto } from "./dtos/response/token-response.dto";
+import { ConfigService } from "@nestjs/config";
 
 @ApiTags('인증')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService,
+              private readonly configService: ConfigService) {}
 
   @ApiOperation({ summary: '일반 로그인 요청' })
   @ApiResponse({ status: HttpStatus.OK, type: TokenResponseDto })
@@ -59,20 +61,23 @@ export class AuthController {
     return await this.authService.refresh(body);
   }
 
-  @ApiOperation({ summary: '메일 인증' })
   @Public()
   @Get('verify-email')
-  @Redirect('http://localhost:3000') // TODO: 이메일 인증 완료 페이지로 리다이렉트
-  async verifyEmail(@Query() query: VerifyEmailDto) {
-    return await this.authService.verifyEmail(query);
+  @Redirect()
+  async verifyEmail(@Query() query: VerifyEmailDto,
+                    @Res() res: Response) {
+    await this.authService.verifyEmail(query);
+    return {
+      url: this.configService.get<string>('app.frontendUrl')
+    };
   }
 
   @ApiOperation({ summary: '메일 인증 요청 (회원가입 시 기본적으로 메일 발송함)' })
   @ApiResponse({ status: HttpStatus.ACCEPTED })
   @Get('send-email-verification')
   @HttpCode(HttpStatus.ACCEPTED)
-  async resendEmailVerification(@CurrentUser() currentUser: CurrentUserDto) {
-    return await this.authService.sendEmailVerification(currentUser);
+  async resendEmailVerification(@CurrentUser() currentUser: CurrentUserDto): Promise<void> {
+    await this.authService.sendEmailVerification(currentUser);
   }
 
   @Get('jwtTest')
