@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { darkTheme } from "@/styles/theme";
-import styled, { keyframes } from "styled-components";
-import Link from "next/link";
+import styled from "styled-components";
 import { useRouter } from "next/router";
 import { useRecoilState } from "recoil";
-import { authState } from "@/recoil";
+import { accessTokenState } from "@/recoil/user";
 import axios from "axios";
 
 interface IModalProp {
@@ -15,7 +14,7 @@ interface IModalProp {
 
 export default function TopNavDrawer({ isOpen, isClose }: IModalProp) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [isLogin, setIsLogin] = useRecoilState(authState);
+  const [isLogin, setIsLogin] = useRecoilState(accessTokenState);
   const router = useRouter();
 
   useEffect(() => {

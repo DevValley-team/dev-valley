@@ -2,20 +2,26 @@ import "@toast-ui/editor/dist/toastui-editor.css";
 import "@toast-ui/editor/dist/theme/toastui-editor-dark.css";
 import { Editor } from "@toast-ui/react-editor";
 import styled from "styled-components";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import axios from "axios";
 import { useRecoilState } from "recoil";
 import { accessTokenState } from "@/recoil/user";
 import { useRouter } from "next/router";
+
 interface Props {
+  title: string;
   content: string;
   editorRef: React.MutableRefObject<any>;
 }
 
-const PostEditor = ({ content = "", editorRef }: Props) => {
-  const [title, setTitle] = useState("");
+const PostModifyEditor = ({ title, content, editorRef }: Props) => {
   const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
+  const [postTitle, setTitle] = useState(title);
   const router = useRouter();
+
+  useEffect(() => {
+    editorRef.current?.getInstance().setHTML(content);
+  }, []);
 
   const toolbarItems = [
     ["heading", "bold", "italic", "strike"],
@@ -24,15 +30,15 @@ const PostEditor = ({ content = "", editorRef }: Props) => {
     ["code"],
   ];
 
-  const handleConfirm = async () => {
+  const handleModify = async () => {
     const editorIns = editorRef.current.getInstance();
     const contentText = editorIns.getHTML();
     try {
       await axios
-        .post(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/posts`,
+        .patch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/posts/${router.query.id}`,
           {
-            title: title,
+            title: postTitle,
             content: contentText,
             categoryName: "자유게시판",
           },
@@ -43,8 +49,8 @@ const PostEditor = ({ content = "", editorRef }: Props) => {
           }
         )
         .then((response) => {
-          if (response.status === 201) {
-            router.push("/community", undefined, { shallow: true });
+          if (response.status === 200) {
+            router.back();
           }
         });
     } catch (e) {
@@ -60,7 +66,7 @@ const PostEditor = ({ content = "", editorRef }: Props) => {
   return (
     <Container>
       <Label>제목</Label>
-      <Input value={title} onChange={titleOnChange} type="text" />
+      <Input value={postTitle} onChange={titleOnChange} type="text" />
       <Label>본문</Label>
       <EditorWrapper>
         {editorRef && (
@@ -75,7 +81,8 @@ const PostEditor = ({ content = "", editorRef }: Props) => {
           />
         )}
       </EditorWrapper>
-      <button onClick={handleConfirm}>확인</button>
+      <button onClick={handleModify}>수정</button>
+      <button onClick={() => router.back()}>취소</button>
     </Container>
   );
 };
@@ -118,4 +125,4 @@ const EditorWrapper = styled.div`
   margin-top: 10px;
 `;
 
-export default PostEditor;
+export default PostModifyEditor;

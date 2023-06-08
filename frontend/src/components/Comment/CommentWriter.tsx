@@ -5,7 +5,7 @@ import { Editor } from "@toast-ui/react-editor";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useRecoilState } from "recoil";
-import { authState } from "@/recoil";
+import { accessTokenState } from "@/recoil/user";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import Link from "next/link";
@@ -17,7 +17,7 @@ interface Props {
 export default function CommentWriter({ editorRef }: Props) {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const [accessToken, setAccessToken] = useRecoilState(authState);
+  const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
   const toolbarItems = [
     ["heading", "bold", "italic", "strike"],
     ["ul", "ol", "task"],

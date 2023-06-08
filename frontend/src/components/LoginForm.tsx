@@ -1,4 +1,4 @@
-import { authState } from "@/recoil";
+import { accessTokenState, userInfoState } from "@/recoil/user";
 import axios from "axios";
 import Router, { useRouter } from "next/router";
 import { useState } from "react";
@@ -12,7 +12,8 @@ interface ILoginData {
 
 export default function LoginForm() {
   const router = useRouter();
-  const [accessToken, setAccessToken] = useRecoilState(authState);
+  const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
+  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
   const [loginFailed, setLoginFailed] = useState("");
 
   const {
@@ -21,16 +22,39 @@ export default function LoginForm() {
     handleSubmit,
   } = useForm<ILoginData>();
 
+  const getUserInfo = async (token: string) => {
+    await axios
+      .get(`${process.env.NEXT_PUBLIC_API_URL}/api/users/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((user) => {
+        setUserInfo({
+          id: user.data.id,
+          email: user.data.email,
+          nickname: user.data.nickname,
+          experience: user.data.experience,
+          role: user.data.role,
+          lastLoginAt: user.data.lastLoginAt,
+          createdAt: user.data.createdAt,
+          updatedAt: user.data.updatedAt,
+        });
+      });
+  };
+
   const onVaild = async (data: ILoginData) => {
     try {
-      const res = await axios.post("/api/auth/login", {
-        email: data.email,
-        password: data.password,
-      });
-      if (res.status === 200) {
-        setAccessToken(res.data.accessToken);
-        router.push("/", undefined, { shallow: true });
-      }
+      await axios
+        .post("/api/auth/login", {
+          email: data.email,
+          password: data.password,
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            setAccessToken(res.data.accessToken);
+            router.push("/", undefined, { shallow: true });
+            getUserInfo(res.data.accessToken);
+          }
+        });
     } catch (e) {
       setLoginFailed("아이디, 비밀번호를 확인해주세요.");
     }
