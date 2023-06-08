@@ -2,7 +2,7 @@ import styled from "styled-components";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
-import WarningAlert from "./Alert/InformTimerAlert";
+import WarningAlert from "../Alert/InformTimerAlert";
 import { useState } from "react";
 
 interface ISingupData {

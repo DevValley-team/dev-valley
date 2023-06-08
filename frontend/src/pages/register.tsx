@@ -1,5 +1,5 @@
 import Seo from "@/components/Seo";
-import SignupForm from "@/components/SignupForm";
+import SignupForm from "@/components/Form/SignupForm";
 import Link from "next/link";
 import styled from "styled-components";
 
