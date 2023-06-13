@@ -1,6 +1,6 @@
 import CommentArea from "@/components/Comment/CommentArea";
 import PostUserProfile from "@/components/Post/PostUserProfile";
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import styled from "styled-components";
 import { Content } from "../../components/Post/PostContentStyle";
 import { useQuery } from "@tanstack/react-query";
@@ -49,6 +49,7 @@ interface IPostData {
   createdAt: string;
   updatedAt: string;
   isAuthor: boolean;
+  isLiked: boolean;
 }
 
 interface IPropsData {
@@ -62,7 +63,7 @@ export default function CommunityPost(data: IPropsData) {
   const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
   const router = useRouter();
 
-  const { data: commentData, isLoading } = useQuery<ICommentData>(
+  const { data: commentData } = useQuery<ICommentData>(
     ["comments", data.postData.id, commentPages],
     async () => {
       const commentRes = await axios.get(
@@ -79,7 +80,6 @@ export default function CommunityPost(data: IPropsData) {
     },
     { initialData: data.commentData }
   );
-
   const handleCommentPage = (
     event: React.ChangeEvent<unknown>,
     newPage: number
@@ -131,7 +131,7 @@ export default function CommunityPost(data: IPropsData) {
         dangerouslySetInnerHTML={{ __html: data.postData.content }}
       ></Content>
 
-      <PostLikeButton />
+      <PostLikeButton isLiked={data.postData.isLiked} />
 
       <CommentArea commentData={commentData} />
       <Pagination
@@ -152,7 +152,12 @@ export async function getServerSideProps(context: any) {
   try {
     // id에 해당하는 게시글의 내용
     const postRes = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/posts/${context.params.id}`
+      `${process.env.NEXT_PUBLIC_CUSTOM_SERVER_URL}/api/posts/${context.params.id}`,
+      {
+        headers: {
+          sid: context.req.headers.cookie,
+        },
+      }
     );
     const postData = postRes.data;
 
