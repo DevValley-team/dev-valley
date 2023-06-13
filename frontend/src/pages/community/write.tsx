@@ -1,3 +1,4 @@
+import requiredAuth from "@/components/requiredAuth";
 import dynamic from "next/dynamic";
 import { useRef, useState } from "react";
 import styled from "styled-components";
@@ -6,7 +7,7 @@ const PostEditor = dynamic(() => import("../../components/Post/PostEditor"), {
   ssr: false,
 });
 
-export default function write() {
+function write() {
   const [content, setContent] = useState("");
   const ref = useRef<any>(null);
   return (
@@ -17,3 +18,5 @@ export default function write() {
 }
 
 const Container = styled.div``;
+
+export default requiredAuth(write);
