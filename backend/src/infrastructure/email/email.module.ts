@@ -17,7 +17,7 @@ import * as path from "path";
           defaults: {
             from: config.get<string>('mailer.from'),
           },
-          preview: config.get('NODE_ENV') === 'development',
+          preview: false,
           template: {
             dir: path.join(__dirname, './templates'),
             adapter: new HandlebarsAdapter(),
