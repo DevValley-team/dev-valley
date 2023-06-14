@@ -22,6 +22,10 @@ Content-Type: application/json
 ### 댓글 조회
 GET {{domain}}/api/comments?postId=2&page=1&limit=10
 
+### 댓글 조회 (로그인)
+GET {{domain}}/api/comments?postId=2&page=1&limit=10
+Authorization: Bearer {{accessToken}}
+
 ### 댓글 조회
 GET {{domain}}/api/comments?postId=2
 
@@ -39,7 +43,7 @@ DELETE {{domain}}/api/comments/2
 Authorization: Bearer {{accessToken}}
 
 ### 댓글 좋아요
-POST {{domain}}/api/comments/2/like
+POST {{domain}}/api/comments/3/like
 Authorization: Bearer {{accessToken}}
 
 ### 댓글 좋아요 취소

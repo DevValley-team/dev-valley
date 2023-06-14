@@ -23,7 +23,10 @@ export class CommentResponseDto {
 
   @ApiProperty({ type: Boolean, default: false })
   @Expose()
-  isBlinded: boolean;
+  isBlinded: boolean = false;
+
+  @ApiProperty()
+  isLiked: boolean = false;
 
   @ApiProperty()
   @Expose()

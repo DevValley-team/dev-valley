@@ -65,8 +65,9 @@ export class CommentsController {
   @ApiPaginatedResponse(CommentResponseDto)
   @Public()
   @Get('')
-  async getComments(@Query() getCommentsDto: GetCommentsDto): Promise<PageDto<CommentResponseDto>> {
-    return await this.commentsService.getComments(getCommentsDto);
+  async getComments(@Query() getCommentsDto: GetCommentsDto,
+                    @CurrentUser() currentUser: CurrentUserDto): Promise<PageDto<CommentResponseDto>> {
+    return await this.commentsService.getComments(getCommentsDto, currentUser);
   }
 
   @ApiOperation({ summary: '댓글 좋아요' })

@@ -66,7 +66,7 @@ export class CommentsService {
     return comment;
   }
 
-  async getComments(getCommentsDto: GetCommentsDto): Promise<PageDto<CommentResponseDto>> {
+  async getComments(getCommentsDto: GetCommentsDto, currentUser: CurrentUserDto): Promise<PageDto<CommentResponseDto>> {
     const { page, limit, postId } = getCommentsDto;
     const offset = (page - 1) * limit;
 
@@ -76,12 +76,30 @@ export class CommentsService {
       .leftJoinAndSelect('comment.children', 'children')
       .leftJoinAndSelect('children.user', 'childrenUser')
       .where('comment.postId = :postId', { postId })
-      .andWhere('comment.parent IS NULL') // 대댓글만 가져옴
+      .andWhere('comment.parent IS NULL')
       .skip(offset)
       .take(limit)
       .getManyAndCount();
 
-    const response = comments.map(comment => new CommentResponseDto(comment));
+    let response
+    if(currentUser) {
+      const commentIds: number[] = comments.map(comment => comment.id);
+      const commentLikes = await this.commentLikeRepository
+        .createQueryBuilder('commentLike')
+        .where('commentLike.comment_id IN (:...commentIds)', { commentIds })
+        .andWhere('commentLike.user_id = :userId', { userId: currentUser.id })
+        .getMany();
+
+      response = comments.map(comment => {
+        const result = new CommentResponseDto(comment)
+        result.isLiked = commentLikes.some(commentLike => commentLike.id === comment.id);
+        return result;
+      });
+    } else {
+      response = comments.map(comment => new CommentResponseDto(comment));
+    }
+
+
     return new PageDto(response, page, limit, totalComments);
   }
 
