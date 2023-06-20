@@ -46,6 +46,7 @@ export class CommentResponseDto {
       this.id = comment.id;
       this.content = comment.content;
       this.user = new UserSummaryResponseDto(comment.user);
+      this.likeCount = comment.likeCount;
       this.isBlinded = comment.isBlinded;
       this.createdAt = comment.createdAt;
       this.updatedAt = comment.updatedAt;

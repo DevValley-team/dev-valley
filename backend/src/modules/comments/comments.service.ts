@@ -81,7 +81,7 @@ export class CommentsService {
       .take(limit)
       .getManyAndCount();
 
-    let response
+    let response;
     if(currentUser) {
       const commentIds: number[] = comments.map(comment => comment.id);
       const commentLikes = await this.commentLikeRepository
@@ -98,7 +98,6 @@ export class CommentsService {
     } else {
       response = comments.map(comment => new CommentResponseDto(comment));
     }
-
 
     return new PageDto(response, page, limit, totalComments);
   }
