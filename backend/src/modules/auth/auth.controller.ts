@@ -11,8 +11,8 @@ import {
   ParseUUIDPipe, Query, HttpStatus, Res
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import { CreateUserDto } from "../users/dtos/create-user.dto";
-import { LoginUserDto } from "./dtos/login-user.dto";
+import { CreateUserDto } from "../users/dtos/request/create-user.dto";
+import { LoginUserDto } from "./dtos/request/login-user.dto";
 import { LocalAuthGuard } from "./guards/local-auth.guard";
 import { SignupResponseDto } from "./dtos/response/signup-response.dto";
 import { Serialize } from "../../common/interceptors/serialize.interceptor";
@@ -21,8 +21,8 @@ import { CurrentUser } from "../../common/decorators/current-user.decorator";
 import { Roles } from "../../common/decorators/roles.decorator";
 import { UserRole } from "../users/entities/user-role.enum";
 import { Public } from "../../common/decorators/public.decorator";
-import { RefreshTokenDto } from "./dtos/refresh-token.dto";
-import { VerifyEmailDto } from "./dtos/verify-email.dto";
+import { RefreshTokenDto } from "./dtos/request/refresh-token.dto";
+import { VerifyEmailDto } from "./dtos/request/verify-email.dto";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { TokenResponseDto } from "./dtos/response/token-response.dto";
 import { ConfigService } from "@nestjs/config";

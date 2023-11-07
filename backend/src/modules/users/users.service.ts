@@ -2,7 +2,7 @@ import { BadRequestException, ForbiddenException, Injectable, NotFoundException 
 import { User } from "./entities/user.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { EntityManager, Repository } from "typeorm";
-import { CreateUserDto } from "./dtos/create-user.dto";
+import { CreateUserDto } from "./dtos/request/create-user.dto";
 import { UserRole } from "./entities/user-role.enum";
 import { CurrentUserDto } from "../../common/dtos/current-user.dto";
 import { AuthUser } from "./entities/auth-user.entity";

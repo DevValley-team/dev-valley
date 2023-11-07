@@ -11,16 +11,16 @@ import {
   Post,
   Query
 } from "@nestjs/common";
-import { CreateCommentDto } from "./dtos/create-comment.dto";
+import { CreateCommentDto } from "./dtos/request/create-comment.dto";
 import { CommentsService } from "./comments.service";
 import { CurrentUser } from "../../common/decorators/current-user.decorator";
 import { CurrentUserDto } from "../../common/dtos/current-user.dto";
-import { GetCommentsDto } from "./dtos/get-comments.dto";
+import { GetCommentsDto } from "./dtos/response/get-comments.dto";
 import { Public } from "../../common/decorators/public.decorator";
 import { Serialize } from "../../common/interceptors/serialize.interceptor";
 import { CommentResponseDto } from "./dtos/response/comment-response.dto";
-import { UpdateCommentDto } from "./dtos/update-comment.dto";
-import { RemoveCommentDto } from "./dtos/remove-comment.dto";
+import { UpdateCommentDto } from "./dtos/request/update-comment.dto";
+import { RemoveCommentDto } from "./dtos/request/remove-comment.dto";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { ApiPaginatedResponse } from "../../common/decorators/api-paginated-response.decorator";
 import { PageDto } from "../../common/dtos/page.dto";

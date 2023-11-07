@@ -12,7 +12,7 @@ import { UserResponseDto } from "./dtos/response/user-response.dto";
 import { CurrentUserDto } from "../../common/dtos/current-user.dto";
 import { CurrentUser } from "../../common/decorators/current-user.decorator";
 import { Public } from "../../common/decorators/public.decorator";
-import { ExistsEmailDto } from "./dtos/exists-email.dto";
+import { ExistsEmailDto } from "./dtos/request/exists-email.dto";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 @ApiTags('유저')

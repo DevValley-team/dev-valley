@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from "../users/users.service";
 import * as bcrypt from 'bcrypt';
-import { CreateUserDto } from "../users/dtos/create-user.dto";
+import { CreateUserDto } from "../users/dtos/request/create-user.dto";
 import { JwtService } from "@nestjs/jwt";
 import { User } from "../users/entities/user.entity";
 import { CurrentUserDto } from "../../common/dtos/current-user.dto";
@@ -9,12 +9,12 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { AuthUser } from "../users/entities/auth-user.entity";
 import { Repository } from "typeorm";
 import { ConfigService } from "@nestjs/config";
-import { RefreshTokenDto } from "./dtos/refresh-token.dto";
+import { RefreshTokenDto } from "./dtos/request/refresh-token.dto";
 import { EmailVerificationDto } from "../../infrastructure/email/dtos/email-verification.dto";
 import { EmailService } from "../../infrastructure/email/email.service";
 import { v4 as uuidv4 } from 'uuid';
 import { UserRole } from "../users/entities/user-role.enum";
-import { VerifyEmailDto } from "./dtos/verify-email.dto";
+import { VerifyEmailDto } from "./dtos/request/verify-email.dto";
 import { TokenResponseDto } from "./dtos/response/token-response.dto";
 
 @Injectable()

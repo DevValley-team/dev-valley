@@ -1,13 +1,13 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { DataSource, Repository } from "typeorm";
-import { CreateCommentDto } from "./dtos/create-comment.dto";
+import { CreateCommentDto } from "./dtos/request/create-comment.dto";
 import { CurrentUserDto } from "../../common/dtos/current-user.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UsersService } from "../users/users.service";
 import { PostsService } from "../posts/posts.service";
 import { CommentLike } from "./entities/comment-like.entity";
 import { Comment } from "./entities/comment.entity";
-import { GetCommentsDto } from "./dtos/get-comments.dto";
+import { GetCommentsDto } from "./dtos/response/get-comments.dto";
 import { PageDto } from "../../common/dtos/page.dto";
 import { CommentResponseDto } from "./dtos/response/comment-response.dto";
 import { plainToInstance } from "class-transformer";
