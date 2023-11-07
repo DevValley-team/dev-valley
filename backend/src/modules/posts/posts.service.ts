@@ -144,19 +144,14 @@ export class PostsService {
   }
 
   async unlikePost(id: number, currentUser: CurrentUserDto): Promise<{ postId: number }> {
-    const post = await this.findOneByIdOrThrow(id);
-
-    const postLikeCount = await this.postLikeRepository.createQueryBuilder('postLike')
-      .where('postLike.post_id = :postId', { postId: id })
-      .andWhere('postLike.user_id = :userId', { userId: currentUser.id })
-      .getCount();
-
-    if (postLikeCount === 0) throw new ConflictException('좋아요를 누르지 않았습니다.');
-
-    await this.postLikeRepository.delete({ post, user: currentUser });
-
+    const postLike = await this.postLikeRepository
+      .createQueryBuilder('postLike')
+      .where('post_id = :postId', { postId: id })
+      .andWhere('user_id = :userId', { userId: currentUser.id })
+      .getOne();
+    if (!postLike) throw new ConflictException('좋아요를 누르지 않았습니다.');
+    await this.postLikeRepository.remove(postLike)
     await this.postRepository.decrement({ id }, 'likeCount', 1);
-
     return { postId: id };
   }
 

@@ -136,19 +136,16 @@ export class CommentsService {
     }
   }
 
-  async unlikeComment(id: number, currentUser: CurrentUserDto) {
-    const comment = await this.findOneByIdOrThrow(id);
-
-    const commentLikeCount = await this.commentLikeRepository.createQueryBuilder('commentLike')
-      .where('commentLike.comment_id = :commentId', { commentId: id })
-      .andWhere('commentLike.user_id = :userId', { userId: currentUser.id })
-      .getCount();
-
-    if (commentLikeCount === 0) throw new ConflictException('좋아요를 누르지 않았습니다.');
-
+  async unlikeComment(id: number, currentUser: CurrentUserDto): Promise<{ commentId: number }> {
+    const commentLike = await this.commentLikeRepository
+      .createQueryBuilder('commentLike')
+      .where('comment_id = :commentId', { commentId: id })
+      .andWhere('user_id = :userId', { userId: currentUser.id })
+      .getOne();
+    if (!commentLike) throw new ConflictException('좋아요를 누르지 않았습니다.');
+    await this.commentLikeRepository.remove(commentLike);
     await this.commentRepository.decrement({ id }, 'likeCount', 1);
-
-    return await this.commentLikeRepository.delete({ comment, user: currentUser });
+    return { commentId: id };
   }
 
 }
