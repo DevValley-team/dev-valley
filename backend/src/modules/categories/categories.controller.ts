@@ -10,7 +10,7 @@ import {
   Post,
 } from "@nestjs/common";
 import { CategoriesService } from "./categories.service";
-import { CreateCategoryDto } from "./dtos/create-category.dto";
+import { CreateCategoryDto } from "./dtos/request/create-category.dto";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Serialize } from "../../common/interceptors/serialize.interceptor";
 import { Public } from "../../common/decorators/public.decorator";

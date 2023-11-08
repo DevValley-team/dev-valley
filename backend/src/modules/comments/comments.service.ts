@@ -1,13 +1,13 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { DataSource, Repository } from "typeorm";
-import { CreateCommentDto } from "./dtos/create-comment.dto";
+import { CreateCommentDto } from "./dtos/request/create-comment.dto";
 import { CurrentUserDto } from "../../common/dtos/current-user.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UsersService } from "../users/users.service";
 import { PostsService } from "../posts/posts.service";
 import { CommentLike } from "./entities/comment-like.entity";
 import { Comment } from "./entities/comment.entity";
-import { GetCommentsDto } from "./dtos/get-comments.dto";
+import { GetCommentsDto } from "./dtos/response/get-comments.dto";
 import { PageDto } from "../../common/dtos/page.dto";
 import { CommentResponseDto } from "./dtos/response/comment-response.dto";
 import { plainToInstance } from "class-transformer";
@@ -66,7 +66,7 @@ export class CommentsService {
     return comment;
   }
 
-  async getComments(getCommentsDto: GetCommentsDto): Promise<PageDto<CommentResponseDto>> {
+  async getComments(getCommentsDto: GetCommentsDto, currentUser: CurrentUserDto): Promise<PageDto<CommentResponseDto>> {
     const { page, limit, postId } = getCommentsDto;
     const offset = (page - 1) * limit;
 
@@ -76,12 +76,29 @@ export class CommentsService {
       .leftJoinAndSelect('comment.children', 'children')
       .leftJoinAndSelect('children.user', 'childrenUser')
       .where('comment.postId = :postId', { postId })
-      .andWhere('comment.parent IS NULL') // 대댓글만 가져옴
+      .andWhere('comment.parent IS NULL')
       .skip(offset)
       .take(limit)
       .getManyAndCount();
 
-    const response = comments.map(comment => new CommentResponseDto(comment));
+    let response;
+    if(currentUser) {
+      const commentIds: number[] = comments.map(comment => comment.id);
+      const commentLikes = await this.commentLikeRepository
+        .createQueryBuilder('commentLike')
+        .where('commentLike.comment_id IN (:...commentIds)', { commentIds })
+        .andWhere('commentLike.user_id = :userId', { userId: currentUser.id })
+        .getMany();
+
+      response = comments.map(comment => {
+        const result = new CommentResponseDto(comment)
+        result.isLiked = commentLikes.some(commentLike => commentLike.id === comment.id);
+        return result;
+      });
+    } else {
+      response = comments.map(comment => new CommentResponseDto(comment));
+    }
+
     return new PageDto(response, page, limit, totalComments);
   }
 
@@ -119,19 +136,16 @@ export class CommentsService {
     }
   }
 
-  async unlikeComment(id: number, currentUser: CurrentUserDto) {
-    const comment = await this.findOneByIdOrThrow(id);
-
-    const commentLikeCount = await this.commentLikeRepository.createQueryBuilder('commentLike')
-      .where('commentLike.comment_id = :commentId', { commentId: id })
-      .andWhere('commentLike.user_id = :userId', { userId: currentUser.id })
-      .getCount();
-
-    if (commentLikeCount === 0) throw new ConflictException('좋아요를 누르지 않았습니다.');
-
+  async unlikeComment(id: number, currentUser: CurrentUserDto): Promise<{ commentId: number }> {
+    const commentLike = await this.commentLikeRepository
+      .createQueryBuilder('commentLike')
+      .where('comment_id = :commentId', { commentId: id })
+      .andWhere('user_id = :userId', { userId: currentUser.id })
+      .getOne();
+    if (!commentLike) throw new ConflictException('좋아요를 누르지 않았습니다.');
+    await this.commentLikeRepository.remove(commentLike);
     await this.commentRepository.decrement({ id }, 'likeCount', 1);
-
-    return await this.commentLikeRepository.delete({ comment, user: currentUser });
+    return { commentId: id };
   }
 
 }

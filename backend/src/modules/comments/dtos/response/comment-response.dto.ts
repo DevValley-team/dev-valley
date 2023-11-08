@@ -23,7 +23,10 @@ export class CommentResponseDto {
 
   @ApiProperty({ type: Boolean, default: false })
   @Expose()
-  isBlinded: boolean;
+  isBlinded: boolean = false;
+
+  @ApiProperty()
+  isLiked: boolean = false;
 
   @ApiProperty()
   @Expose()
@@ -43,6 +46,7 @@ export class CommentResponseDto {
       this.id = comment.id;
       this.content = comment.content;
       this.user = new UserSummaryResponseDto(comment.user);
+      this.likeCount = comment.likeCount;
       this.isBlinded = comment.isBlinded;
       this.createdAt = comment.createdAt;
       this.updatedAt = comment.updatedAt;

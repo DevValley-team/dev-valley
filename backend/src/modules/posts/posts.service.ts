@@ -9,20 +9,17 @@ import {
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Post } from "./entities/post.entity";
-import { CreatePostDto } from "./dtos/create-post.dto";
+import { CreatePostDto } from "./dtos/request/create-post.dto";
 import { UsersService } from "../users/users.service";
-import { UpdatePostDto } from "./dtos/update-post.dto";
+import { UpdatePostDto } from "./dtos/request/update-post.dto";
 import { CategoriesService } from "../categories/categories.service";
-import { GetPostsDto } from "./dtos/get-posts.dto";
+import { GetPostsDto } from "./dtos/response/get-posts.dto";
 import { CurrentUserDto } from "../../common/dtos/current-user.dto";
 import { PostSummaryResponseDto } from "./dtos/response/post-summary-response.dto";
 import { PageDto } from "../../common/dtos/page.dto";
 import { CreatePostResponseDto } from "./dtos/response/create-post-response.dto";
-import { Serialize } from "../../common/interceptors/serialize.interceptor";
 import { plainToInstance } from "class-transformer";
 import { PostLike } from "./entities/post-like.entity";
-import { log } from "handlebars";
-import { SerializeAndSetIsAuthor } from "../../common/interceptors/serialize-and-set-is-author.interceptor";
 import { PostDetailsResponseDto } from "./dtos/response/post-details-response.dto";
 
 @Injectable()
@@ -100,7 +97,7 @@ export class PostsService {
     return new PageDto(response, page, limit, totalPosts);
   }
 
-  async getPostDetails(id: number): Promise<Post> {
+  async getPostDetails(id: number, currentUser: CurrentUserDto): Promise<PostDetailsResponseDto> {
     const post = await this.postRepository.findOne({
       where: { id },
       relations: ['user']
@@ -111,7 +108,20 @@ export class PostsService {
     // TODO: 고유 방문자
     await this.postRepository.increment({ id }, 'viewCount', 1);
 
-    return post;
+    const responsePost = plainToInstance(PostDetailsResponseDto, post, { strategy: 'excludeAll' });
+
+    if (currentUser) {
+      responsePost['isAuthor'] = post.user.id === currentUser.id;
+
+      const postLikeCount = await this.postLikeRepository.createQueryBuilder('postLike')
+        .where('postLike.post_id = :postId', { postId: id })
+        .andWhere('postLike.user_id = :userId', { userId: currentUser.id })
+        .getCount();
+
+      responsePost['isLiked'] = postLikeCount > 0;
+    }
+
+    return responsePost;
   }
 
   async likePost(id: number, currentUser: CurrentUserDto): Promise<{ postId: number }> {
@@ -134,19 +144,14 @@ export class PostsService {
   }
 
   async unlikePost(id: number, currentUser: CurrentUserDto): Promise<{ postId: number }> {
-    const post = await this.findOneByIdOrThrow(id);
-
-    const postLikeCount = await this.postLikeRepository.createQueryBuilder('postLike')
-      .where('postLike.post_id = :postId', { postId: id })
-      .andWhere('postLike.user_id = :userId', { userId: currentUser.id })
-      .getCount();
-
-    if (postLikeCount === 0) throw new ConflictException('좋아요를 누르지 않았습니다.');
-
-    await this.postLikeRepository.delete({ post, user: currentUser });
-
+    const postLike = await this.postLikeRepository
+      .createQueryBuilder('postLike')
+      .where('post_id = :postId', { postId: id })
+      .andWhere('user_id = :userId', { userId: currentUser.id })
+      .getOne();
+    if (!postLike) throw new ConflictException('좋아요를 누르지 않았습니다.');
+    await this.postLikeRepository.remove(postLike)
     await this.postRepository.decrement({ id }, 'likeCount', 1);
-
     return { postId: id };
   }
 

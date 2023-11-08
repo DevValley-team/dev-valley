@@ -11,13 +11,13 @@ import {
   Query,
 } from "@nestjs/common";
 import { PostsService } from "./posts.service";
-import { CreatePostDto } from "./dtos/create-post.dto";
+import { CreatePostDto } from "./dtos/request/create-post.dto";
 import { CurrentUser } from "../../common/decorators/current-user.decorator";
 import { CurrentUserDto } from "../../common/dtos/current-user.dto";
 import { PostDetailsResponseDto } from "./dtos/response/post-details-response.dto";
-import { UpdatePostDto } from "./dtos/update-post.dto";
+import { UpdatePostDto } from "./dtos/request/update-post.dto";
 import { Public } from "../../common/decorators/public.decorator";
-import { GetPostsDto } from "./dtos/get-posts.dto";
+import { GetPostsDto } from "./dtos/response/get-posts.dto";
 import { SerializeAndSetIsAuthor } from "../../common/interceptors/serialize-and-set-is-author.interceptor";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { PageDto } from "../../common/dtos/page.dto";
@@ -71,10 +71,9 @@ export class PostsController {
   @ApiResponse({ status: HttpStatus.OK, type: PostDetailsResponseDto })
   @Public()
   @Get(':id')
-  @SerializeAndSetIsAuthor(PostDetailsResponseDto)
   async getPostDetails(@Param('id', ParseIntPipe) id: number,
                        @CurrentUser() currentUser: CurrentUserDto) {
-    return await this.postsService.getPostDetails(id);
+    return await this.postsService.getPostDetails(id, currentUser);
   }
 
   @Post(':id/like')

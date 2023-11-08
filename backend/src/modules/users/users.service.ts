@@ -2,10 +2,14 @@ import { BadRequestException, ForbiddenException, Injectable, NotFoundException 
 import { User } from "./entities/user.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { EntityManager, Repository } from "typeorm";
-import { CreateUserDto } from "./dtos/create-user.dto";
+import { CreateUserDto } from "./dtos/request/create-user.dto";
 import { UserRole } from "./entities/user-role.enum";
 import { CurrentUserDto } from "../../common/dtos/current-user.dto";
 import { AuthUser } from "./entities/auth-user.entity";
+import { plainToInstance } from "class-transformer";
+import { UserResponseDto } from "./dtos/response/user-response.dto";
+import { UpdateUserDto } from "./dtos/request/update-user.dto";
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -24,12 +28,15 @@ export class UsersService {
     });
   }
 
-  async update(id: number, attrs: Partial<User>): Promise<User> {
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.findOneByIdOrThrow(id);
-
-    const updatedUser = Object.assign(user, attrs);
+    if (updateUserDto.password) {
+      const saltRounds = 10;
+      updateUserDto.password = await bcrypt.hash(updateUserDto.password, saltRounds);
+    }
+    const updatedUser = Object.assign(user, updateUserDto);
     updatedUser.updatedAt = new Date();
-    return this.userRepository.save(updatedUser);
+    return await this.userRepository.save(updatedUser);
   }
 
   async updateLastLoginAt(user: User): Promise<void> {
@@ -49,6 +56,17 @@ export class UsersService {
     const user = await this.findOneByIdOrThrow(id);
 
     const result = await this.userRepository.softRemove(user);
+  }
+
+  async getUserDetails(currentUser: CurrentUserDto) {
+    const { id } = currentUser;
+
+    const user = await this.userRepository.createQueryBuilder('user')
+      .leftJoinAndSelect('user.authUser', 'authUser')
+      .where('user.id = :id', { id })
+      .getOne();
+
+    return plainToInstance(UserResponseDto, user, { strategy: 'excludeAll' });
   }
 
   async findOneByIdOrThrow(id: number): Promise<User> {

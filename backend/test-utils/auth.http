@@ -13,7 +13,7 @@ POST {{domain}}/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "test@test.com",
+  "email": "test2@test.com",
   "password": "12345678"
 }
 
@@ -63,3 +63,7 @@ Authorization: Bearer {{accessToken}}
 ### role test ADMIN
 GET {{domain}}/api/auth/roleTest
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJhZG1pbkBhZG1pbi5jb20iLCJuaWNrbmFtZSI6InRlc3QyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjgwNjg5ODk4LCJleHAiOjE2ODA3NzYyOTh9.0RgGsbkmNTjVwf7Nq0oLYOQSgoLEq6wNymaF6Agugrg
+
+### email 인증
+GET {{domain}}/api/auth/send-email-verification
+Authorization: Bearer {{accessToken}}

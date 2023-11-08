@@ -1,3 +1,12 @@
 ### 나의 정보 조회
 GET {{domain}}/api/users/me
 Authorization: Bearer {{accessToken}}
+
+### 회원정보 수정
+PATCH {{domain}}/api/users/me
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "email": "test2@test.com"
+}

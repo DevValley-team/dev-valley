@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from "../users/users.service";
 import * as bcrypt from 'bcrypt';
-import { CreateUserDto } from "../users/dtos/create-user.dto";
+import { CreateUserDto } from "../users/dtos/request/create-user.dto";
 import { JwtService } from "@nestjs/jwt";
 import { User } from "../users/entities/user.entity";
 import { CurrentUserDto } from "../../common/dtos/current-user.dto";
@@ -9,12 +9,12 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { AuthUser } from "../users/entities/auth-user.entity";
 import { Repository } from "typeorm";
 import { ConfigService } from "@nestjs/config";
-import { RefreshTokenDto } from "./dtos/refresh-token.dto";
+import { RefreshTokenDto } from "./dtos/request/refresh-token.dto";
 import { EmailVerificationDto } from "../../infrastructure/email/dtos/email-verification.dto";
 import { EmailService } from "../../infrastructure/email/email.service";
 import { v4 as uuidv4 } from 'uuid';
 import { UserRole } from "../users/entities/user-role.enum";
-import { VerifyEmailDto } from "./dtos/verify-email.dto";
+import { VerifyEmailDto } from "./dtos/request/verify-email.dto";
 import { TokenResponseDto } from "./dtos/response/token-response.dto";
 
 @Injectable()
@@ -38,23 +38,18 @@ export class AuthService {
     return user;
   }
 
-  async signup(createUserDto: CreateUserDto) {
-    const isEmailExists = await this.usersService.isEmailExists(createUserDto.email);
+  async signup(createUserDto: CreateUserDto){
+    if (await this.usersService.isEmailExists(createUserDto.email))
+      throw new BadRequestException('이메일을 이미 사용중입니다.');
 
-    if (isEmailExists) throw new BadRequestException('이메일을 이미 사용중입니다.');
-
-    const isNicknameExists = await this.usersService.isNicknameExists(createUserDto.nickname);
-
-    if (isNicknameExists) throw new BadRequestException('닉네임을 이미 사용중입니다.');
+    if (await this.usersService.isNicknameExists(createUserDto.nickname))
+      throw new BadRequestException('닉네임을 이미 사용중입니다.');
 
     const saltRounds = 10;
     createUserDto.password = await bcrypt.hash(createUserDto.password, saltRounds);
-
     const newUser = await this.usersService.create(createUserDto);
-
     // TODO: 개발기간에는 이메일 인증을 생략
     // await this.sendEmailVerification(newUser);
-
     return newUser;
   }
 
@@ -149,7 +144,7 @@ export class AuthService {
       `${this.configService.get<string>('app.endpoint')}/api/auth/verify-email?token=${token}&id=${id}`;
     option.nickname = nickname;
 
-    await this.emailService.sendEmailVerification(option);
+    await this.emailService.sendEmailVerification(email, option);
 
     return updateAuthUser;
   }

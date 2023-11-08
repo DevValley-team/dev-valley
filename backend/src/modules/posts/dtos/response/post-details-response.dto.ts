@@ -1,6 +1,5 @@
 import { Expose, Type } from "class-transformer";
 import { UserSummaryResponseDto } from "../../../users/dtos/response/user-summary-response.dto";
-import { CategoryResponseDto } from "../../../categories/dtos/response/category-response.dto";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class PostDetailsResponseDto {
@@ -42,6 +41,8 @@ export class PostDetailsResponseDto {
   updatedAt: Date;
 
   @ApiProperty()
-  @Expose()
-  isAuthor: boolean;
+  isAuthor: boolean = false;
+
+  @ApiProperty()
+  isLiked: boolean = false;
 }
