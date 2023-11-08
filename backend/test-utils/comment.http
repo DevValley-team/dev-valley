@@ -47,5 +47,5 @@ POST {{domain}}/api/comments/3/like
 Authorization: Bearer {{accessToken}}
 
 ### 댓글 좋아요 취소
-DELETE {{domain}}/api/comments/2/like
+DELETE {{domain}}/api/comments/3/like
 Authorization: Bearer {{accessToken}}

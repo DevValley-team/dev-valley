@@ -1,9 +1,10 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
   HttpCode, HttpStatus,
-  Param, ParseIntPipe,
+  Param, ParseIntPipe, Patch,
   Query
 } from "@nestjs/common";
 import { UsersService } from "./users.service";
@@ -14,6 +15,7 @@ import { CurrentUser } from "../../common/decorators/current-user.decorator";
 import { Public } from "../../common/decorators/public.decorator";
 import { ExistsEmailDto } from "./dtos/request/exists-email.dto";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { UpdateUserDto } from "./dtos/request/update-user.dto";
 
 @ApiTags('유저')
 @Controller('users')
@@ -42,6 +44,12 @@ export class UsersController {
   async remove(@Param('id', ParseIntPipe) id: number,
                @CurrentUser() currentUser: CurrentUserDto) {
     return await this.usersService.remove(id, currentUser);
+  }
+
+  @Patch('me')
+  async update(@Body() updateUserDto: UpdateUserDto,
+               @CurrentUser() currentUser: CurrentUserDto) {
+    return await this.usersService.update(currentUser.id, updateUserDto);
   }
 
 }

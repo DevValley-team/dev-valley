@@ -8,6 +8,8 @@ import { CurrentUserDto } from "../../common/dtos/current-user.dto";
 import { AuthUser } from "./entities/auth-user.entity";
 import { plainToInstance } from "class-transformer";
 import { UserResponseDto } from "./dtos/response/user-response.dto";
+import { UpdateUserDto } from "./dtos/request/update-user.dto";
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -26,12 +28,15 @@ export class UsersService {
     });
   }
 
-  async update(id: number, attrs: Partial<User>): Promise<User> {
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.findOneByIdOrThrow(id);
-
-    const updatedUser = Object.assign(user, attrs);
+    if (updateUserDto.password) {
+      const saltRounds = 10;
+      updateUserDto.password = await bcrypt.hash(updateUserDto.password, saltRounds);
+    }
+    const updatedUser = Object.assign(user, updateUserDto);
     updatedUser.updatedAt = new Date();
-    return this.userRepository.save(updatedUser);
+    return await this.userRepository.save(updatedUser);
   }
 
   async updateLastLoginAt(user: User): Promise<void> {

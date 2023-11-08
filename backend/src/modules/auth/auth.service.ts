@@ -38,23 +38,18 @@ export class AuthService {
     return user;
   }
 
-  async signup(createUserDto: CreateUserDto) {
-    const isEmailExists = await this.usersService.isEmailExists(createUserDto.email);
+  async signup(createUserDto: CreateUserDto){
+    if (await this.usersService.isEmailExists(createUserDto.email))
+      throw new BadRequestException('이메일을 이미 사용중입니다.');
 
-    if (isEmailExists) throw new BadRequestException('이메일을 이미 사용중입니다.');
-
-    const isNicknameExists = await this.usersService.isNicknameExists(createUserDto.nickname);
-
-    if (isNicknameExists) throw new BadRequestException('닉네임을 이미 사용중입니다.');
+    if (await this.usersService.isNicknameExists(createUserDto.nickname))
+      throw new BadRequestException('닉네임을 이미 사용중입니다.');
 
     const saltRounds = 10;
     createUserDto.password = await bcrypt.hash(createUserDto.password, saltRounds);
-
     const newUser = await this.usersService.create(createUserDto);
-
     // TODO: 개발기간에는 이메일 인증을 생략
     // await this.sendEmailVerification(newUser);
-
     return newUser;
   }
 
